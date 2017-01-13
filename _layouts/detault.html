@@ -16,7 +16,9 @@
       <header>
         <h1>{{ site.title | default: site.github.repository_name }}</h1>
         <p>{{ site.description | default: site.github.project_tagline }}</p>
-       <p> <img src="http://i68.tinypic.com/2lmvtea.jpg"></p>
+        <a href="/account" aria-label="Change your avatar" class="vcard-avatar d-block tooltipped tooltipped-s"><img alt="" class="avatar width-full rounded-2" height="230" src="https://avatars2.githubusercontent.com/u/20163246?v=3&amp;s=460" width="230" /></a>
+
+
 
         {% if site.github.is_project_page %}
           <p class="view"><a href="{{ site.github.repository_url }}">View the Project on GitHub <small>{{ github_name }}</small></a></p>
@@ -55,6 +57,7 @@
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
         ga('create', '{{ site.google_analytics }}', 'auto');
         ga('send', 'pageview');
     </script>
