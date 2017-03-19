@@ -1,12 +1,11 @@
 <img src="images/iidata_banner.jpg">
+
 ## Palautatan means "Statistics" in Tagalog.
 
 ```markdown
 for person in world:
   person = "brilliant"
 ```
-
-I've only been programming for a year, but it already feels like a lifetime.
 
 ### My Data Science Endeavors
 Here are some samples of my work from some courses at UCD.
