@@ -1,13 +1,16 @@
 ## Palautatan means "Statistics" in Tagalog.
 
-
-### Welcome
-This page has not been meddled with yet. Come back in a week, and I'm sure you'll see a bunch of new stuff.
-
 ```markdown
 for person in world:
   person = "brilliant"
 ```
+
+### Edie Espejo
+I've been programming for a year, but it already feels like a lifetime.
+
+### My Data Science Endeavors
+
+
 
 ### Contact Me
 Email: e h e s p e j o @ u c d a v i s . e d u
