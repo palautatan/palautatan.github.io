@@ -20,7 +20,7 @@ Here are some samples of my work from some courses at UCD.
 
 <ul>
 <b>Personal Projects</b>
-<li>More on the way! Please `bepatient.csv`!</li>
+<li>On the way. For now, please see my biohazardCleanUp repository <a href="https://github.com/palautatan/biohazardCleanUp">here</a>.</li>
 </ul>
 
 
