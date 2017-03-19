@@ -10,10 +10,11 @@ for person in world:
 I've only been programming for a year, but it already feels like a lifetime.
 
 ### My Data Science Endeavors
-Here are some samples of my work.
+Here are some samples of my work from some courses at UCD.
 
 <ol>
-<li><a href="assignment6.html" title="Exploring San Francisco Data">San Francisco Data (SQL and Mapping)</a></li>
+<li><b>STA141B</b> <a href="assignment6.html" title="Exploring San Francisco Data">San Francisco Data (SQL and Mapping)</a></li>
+<li>More on the way! Please `bepatient.csv`!</li>
 </ol>
 
 ### Contact Me
