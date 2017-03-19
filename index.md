@@ -6,11 +6,14 @@ for person in world:
 ```
 
 ### Edie Espejo
-I've been programming for a year, but it already feels like a lifetime.
+I've only been programming for a year, but it already feels like a lifetime.
 
 ### My Data Science Endeavors
-<a href="assignment6.html" title="Exploring San Francisco Data">San Francisco Data (SQL and Mapping)</a>
+Here are some samples of my work.
 
+<ol>
+<li><a href="assignment6.html" title="Exploring San Francisco Data">San Francisco Data (SQL and Mapping)</a></li>
+</ol>
 
 ### Contact Me
 Email: e h e s p e j o @ u c d a v i s . e d u
