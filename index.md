@@ -1,13 +1,13 @@
 <img src="images/iidata_banner.jpg">
 
-## Palautatan means "Statistics" in Tagalog.
+## My Data Science Endeavors
 
 ```markdown
 for person in world:
   person = "brilliant"
 ```
 
-### My Data Science Endeavors
+### Work Samples
 Here are some samples of my work from some courses at UCD.
 
 <ul>
