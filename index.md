@@ -2,7 +2,7 @@
 
 ## My Data Science Endeavors
 
-```markdown
+```python
 for person in world:
   person = "brilliant"
 ```
