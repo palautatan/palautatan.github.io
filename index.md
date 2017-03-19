@@ -1,3 +1,4 @@
+<img src="images/iidata_banner.jpg">
 ## Palautatan means "Statistics" in Tagalog.
 
 ```markdown
@@ -17,3 +18,5 @@ Here are some samples of my work.
 
 ### Contact Me
 Email: e h e s p e j o @ u c d a v i s . e d u
+
+<img src="images/banner2.jpg">
