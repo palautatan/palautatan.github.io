@@ -8,7 +8,6 @@ for person in world:
 ```
 
 ### Work Samples
-Here are some samples of my work from some courses at UCD.
 
 <ul>
 <b>STA141B: Data & Web Technologies for Data Analysis</b>
