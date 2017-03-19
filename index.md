@@ -13,7 +13,8 @@ I've only been programming for a year, but it already feels like a lifetime.
 Here are some samples of my work from some courses at UCD.
 
 <ol>
-<li><b>STA141B</b> <a href="assignment6.html" title="Exploring San Francisco Data">San Francisco Data (SQL and Mapping)</a></li>
+<b>STA141B</b>
+<li><a href="assignment6.html" title="Exploring San Francisco Data">San Francisco Data (SQL and Mapping)</a></li>
 <li>More on the way! Please `bepatient.csv`!</li>
 </ol>
 
