@@ -13,6 +13,8 @@ for person in world:
 <b>STA141B: Data & Web Technologies for Data Analysis</b>
 <li><a href="project141b" title="Final Project">White House Petitions (Final Project)</a></li>
 <li><a href="assignments/141b_assignment2.html" title="Image Processing and SVD">Manipulating A Picture of James (Image Processing and SVD)</a></li>
+<li><a href="assignments/141b_assignment4.html" title="Fruit Database">Fruit Database (API's and Modeling)</a></li>
+<li><a href="assignments/141b_assignment5.html" title="Web Scraping the Aggie">Web Scraping the Aggie (Webscraping and Natural Language Processing)</a></li>
 <li><a href="assignments/141b_assignment6.html" title="Exploring San Francisco Data">San Francisco Data (SQL and Mapping)</a></li>
 <li>More on the way! Please <i>bepatient.csv</i>!</li>
 </ul>
