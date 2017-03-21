@@ -16,7 +16,6 @@ for person in world:
 <li><a href="assignments/141b_assignment4.html" title="Fruit Database">Fruit Database (API's and Modeling)</a></li>
 <li><a href="assignments/141b_assignment5.html" title="Web Scraping the Aggie">Web Scraping the Aggie (Webscraping and Natural Language Processing)</a></li>
 <li><a href="assignments/141b_assignment6.html" title="Exploring San Francisco Data">San Francisco Data (SQL and Mapping)</a></li>
-<li>More on the way! Please <i>bepatient.csv</i>!</li>
 </ul>
 
 <ul>
