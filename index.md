@@ -24,8 +24,8 @@ for person in world:
 <li><a href="assignments/138_project3_2.html" title="Logistic Regression">Baby Dataset (Logistic Regression)</a></li>
 </ul>
 
-<b>yumCoffee</b>
 <ul>
+<b>yumCoffee: Personal Project</b>
 <li><a href="assignments/coffee.html">yumCoffee: My Coffee Flavor Profile (ggplot2 and Dataframes)</a></li>
 <li>This is a personal project I've been working on. I haven't gotten to much yet, but I'm sure as this project grows over the years, I can visualize people's taste profiles and share coffee recommendations more seamlessly.</li>
 </ul>
