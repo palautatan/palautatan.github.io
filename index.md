@@ -1,7 +1,7 @@
 <img src="images/iidata_banner.jpg">
 
 ## My Data Science Endeavors
-Hi, my name is Edie. I enjoy boba, stress cleaning, and curating Spotify playlists. Trust me, you'll like them. <a href="">Here, have them</a>. I almost have a BS in Statistics. Almost. Since I am a statistics major, I should like statistics and data science. I particularly like 141B. It's my favorite class. Hi, James!
+Hi, my name is Edie. I enjoy boba, stress cleaning, and curating Spotify playlists. Trust me, you'll like them. <a href="https://open.spotify.com/user/edieaudio">Here, have them</a>. I almost have a BS in Statistics. Almost. Since I am a statistics major, I should like statistics and data science. I particularly like 141B. It's my favorite class. Hi, James!
 
 ```python
 for person in world:
