@@ -24,10 +24,11 @@ for person in world:
 <li><a href="assignments/138_project3_2.html" title="Logistic Regression">Baby Dataset (Logistic Regression)</a></li>
 </ul>
 
-<ul>
 <b>yumCoffee</b>
-This is a personal project I've been working on. I haven't gotten to much yet, but I'm sure as this project grows over the years, we can visualize people's taste profiles better, and share coffee recommendations more seamlessly. Click <a href="assignments/coffee.html">here</a>.
-
+This is a personal project I've been working on. I haven't gotten to much yet, but I'm sure as this project grows over the years, we can visualize people's taste profiles better, and share coffee recommendations more seamlessly. 
+<ul>
+<li>Click <a href="assignments/coffee.html">yumCoffee: My Coffee Flavor Profile (ggplot2 and Dataframes)</a>.</li>
+</ul>
 
 ### Contact Me
 Email: e h e s p e j o @ u c d a v i s . e d u
