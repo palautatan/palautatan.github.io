@@ -25,9 +25,8 @@ for person in world:
 </ul>
 
 <ul>
-<b>Personal Projects</b>
-<li>On the way. For now, please see my biohazardCleanUp repository <a href="https://github.com/palautatan/biohazardCleanUp">here</a>.</li>
-</ul>
+<b>yumCoffee</b>
+This is a personal project I've been working on. I haven't gotten to much yet, but I'm sure as this project grows over the years, we can visualize people's taste profiles better, and share coffee recommendations more seamlessly. Click <a href="assignments/coffee.html">here</a>.
 
 
 ### Contact Me
