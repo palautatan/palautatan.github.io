@@ -19,6 +19,12 @@ for person in world:
 </ul>
 
 <ul>
+<b>STA138: Categorical Data Analysis</b>
+<li><a href="assignments/138_project3_1.html" title="Multinomial Logistic Regression">School Dataset (Multinomial Logistic Regression)</a></li>
+<li><a href="aassignments/138_project3_2.html" title="Logistic Regression">Baby Dataset (Logistic Regression)</a></li>
+</ul>
+
+<ul>
 <b>Personal Projects</b>
 <li>On the way. For now, please see my biohazardCleanUp repository <a href="https://github.com/palautatan/biohazardCleanUp">here</a>.</li>
 </ul>
