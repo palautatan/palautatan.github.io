@@ -21,7 +21,7 @@ for person in world:
 <ul>
 <b>STA138: Categorical Data Analysis</b>
 <li><a href="assignments/138_project3_1.html" title="Multinomial Logistic Regression">School Dataset (Multinomial Logistic Regression)</a></li>
-<li><a href="aassignments/138_project3_2.html" title="Logistic Regression">Baby Dataset (Logistic Regression)</a></li>
+<li><a href="assignments/138_project3_2.html" title="Logistic Regression">Baby Dataset (Logistic Regression)</a></li>
 </ul>
 
 <ul>
