@@ -25,9 +25,9 @@ for person in world:
 </ul>
 
 <b>yumCoffee</b>
-This is a personal project I've been working on. I haven't gotten to much yet, but I'm sure as this project grows over the years, we can visualize people's taste profiles better, and share coffee recommendations more seamlessly. 
 <ul>
-<li>Click <a href="assignments/coffee.html">yumCoffee: My Coffee Flavor Profile (ggplot2 and Dataframes)</a>.</li>
+<li><a href="assignments/coffee.html">yumCoffee: My Coffee Flavor Profile (ggplot2 and Dataframes)</a></li>
+<li>This is a personal project I've been working on. I haven't gotten to much yet, but I'm sure as this project grows over the years, I can visualize people's taste profiles and share coffee recommendations more seamlessly.</li>
 </ul>
 
 ### Contact Me
