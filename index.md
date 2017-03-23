@@ -1,7 +1,7 @@
 <img src="images/iidata_banner.jpg">
 
 ## My Data Science Endeavors
-Hi, my name is Edie. I enjoy boba, stress cleaning, and curating <a href="https://open.spotify.com/user/edieaudio">Spotify playlists</a>. I almost have a BS in Statistics. Almost. My favorite thing in school and one of my favorite things to do for fun is Statistical Computing. If I'm not doing that, I like Real Analysis and Biology. I also ran a Data Science convention called  <a href="http://www.iidata.net/">iidata</a>.
+Hi, my name is Edie. I enjoy boba, stress cleaning, and curating <a href="https://open.spotify.com/user/edieaudio">Spotify playlists</a>. I almost have a BS in Statistics from UC Davis. Almost. My favorite thing in school and one of my favorite things to do for fun is Statistical Computing. Other than that, I adore Real Analysis and Biology. I also ran a Data Science convention called  <a href="http://www.iidata.net/">iidata</a>.
 
 ```python
 for person in world:
