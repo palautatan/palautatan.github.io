@@ -4,8 +4,16 @@
 Hi, my name is Edie. I enjoy boba, stress cleaning, and curating <a href="https://open.spotify.com/user/edieaudio">Spotify playlists</a>. I almost have a BS in Statistics from UC Davis. Almost. My favorite thing in school and one of my favorite things to do for fun is Statistical Computing. Other than that, I adore Real Analysis and Biology. I also ran a Data Science convention called  <a href="http://www.iidata.net/">iidata</a>.
 
 ```python
-for person in world:
-  person = "brilliant"
+# SHOUT OUTS TO BARNEY
+song = "I like to eat, eat, eat apples and bananas!"
+print(song)
+
+vowels = ["a", "e", "i", "o", "u"]
+for vowel in vowels:
+    verb = vowel + "te"
+    fruit = "banan" + vowel + "s"
+    print("I like to " + ("".join(verb)+", ")*2 + "".join(verb) + " apples and " + fruit + "!")
+
 ```
 
 ### Work Samples
