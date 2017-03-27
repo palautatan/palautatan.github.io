@@ -40,6 +40,8 @@ for vowel in vowels:
 </ul>
 
 ### Contact Me
-Email: e h e s p e j o @ u c d a v i s . e d u
+```r
+cat(letters[5], letters[8], letters[26], letters[5], "@live.com", sep="")
+```
 
 <img src="images/banner2.jpg">
