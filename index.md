@@ -1,9 +1,9 @@
-<img src="images/iidata_banner.jpg">
-
 ## Graduate Projects
-
-### Computational Statistics with Applications in Biology and Medicine (PHC 240C)
-Gene Expression Signatures of Endometriosis <a href="graduate/phc240c/endometriosis-report.pdf">report</a> and <a href="https://github.com/palautatan/endometriosis">repository</a>
+<ul>
+<b>Computational Statistics with Applications in Biology and Medicine (PHC 240C)</b>
+* Gene Expression Signatures of endometriosis
+    - <a href="graduate/phc240c/endometriosis-report.pdf">Report</a>
+    - <a href="<a href="https://github.com/palautatan/endometriosis">Git repo</a>
 
 ## Undergraduate Projects
 
@@ -21,10 +21,3 @@ Gene Expression Signatures of Endometriosis <a href="graduate/phc240c/endometrio
 <li><a href="assignments/138_project3_1.html" title="Multinomial Logistic Regression">School Dataset (Multinomial Logistic Regression)</a></li>
 <li><a href="assignments/138_project3_2.html" title="Logistic Regression">Baby Dataset (Logistic Regression)</a></li>
 </ul>
-
-### Contact Me
-```r
-cat(letters[5], letters[8], letters[26], letters[5], "@live.com", sep="")
-```
-
-<img src="images/banner2.jpg">
