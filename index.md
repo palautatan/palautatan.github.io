@@ -1,5 +1,5 @@
 # Mabuhay!
-That means "welcome!" in Tagalog. And since we're on the topic, "palautatan" is how you say statistics. My name is Edie Espejo, and here are some of my selected work samples. My favorite statistical applications are business, basketball, and biotech. In my free time, I love working with basketball data.
+That means "welcome!" in Tagalog. And since we're translating, "palautatan" is how you say statistics. My name is Edie Espejo, and here are some of my selected work samples. My favorite statistical applications are business, basketball, and biotech. In my free time, I love working with basketball data.
 
 ## Personal Projects
 * Warriors Basketball Analyses (Soon to be posted...)
