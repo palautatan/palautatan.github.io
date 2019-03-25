@@ -3,6 +3,10 @@
 
 @import "{{ site.theme }}";
 
+* {
+  font-family: arial 11px;
+}
+
 .a {
   color: red;
 }
