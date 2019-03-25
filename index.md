@@ -1,3 +1,5 @@
+My undergraduate degree in Statistics is from UC Davis, and I'm now a graduate student at Cal. (Go Aggies, and go Bears!)
+
 ## Graduate Projects
 * Computational Statistics with Biomedical Applications (PHC 240C)
     + Gene Expression Signatures of Endometriosis
