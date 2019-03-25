@@ -2,20 +2,3 @@
 ---
 
 @import "{{ site.theme }}";
-
-html {
-  font-size: 16px; // change to whatever
-  font-family: arial;
-
-  @include breakpoint($medium) {
-    font-size: 18px; // change to whatever
-  }
-
-  @include breakpoint($large) {
-    font-size: 20px; // change to whatever
-  }
-
-  @include breakpoint($x-large) {
-    font-size: 22px; // change to whatever
-  }
-}
