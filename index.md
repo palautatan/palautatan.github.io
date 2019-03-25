@@ -1,8 +1,8 @@
 <img src="images/iidata_banner.jpg">
 
 ## Graduate Projects
-<b>PHC 240C: Biostatistical Methods: Computational Statistics with Applications in Biology and Medicine</b>  
-Gene Expression Signatures of Endometriosis <a href="graduate/phc240c/endometriosis-report.pdf">Final Report</a> and <a href="https://github.com/palautatan/endometriosis">repository</a>
+<i>Computational Statistics with Applications in Biology and Medicine (PHC 240C)</i>
+<b>Gene Expression Signatures of Endometriosis</b> <a href="graduate/phc240c/endometriosis-report.pdf">report</a> and <a href="https://github.com/palautatan/endometriosis">repository</a>
 
 ## Undergraduate Projects
 
