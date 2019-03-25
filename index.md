@@ -1,8 +1,8 @@
 ## Graduate Projects
 * Computational Statistics with Biomedical Applications (PHC 240C)
-    - Gene Expression Signatures of Endometriosis
-        + <a href="graduate/phc240c/endometriosis-report.pdf">Final report</a>  
-        + <a href="https://github.com/palautatan/endometriosis">Git repository</a>  
+    + Gene Expression Signatures of Endometriosis
+        - <a href="graduate/phc240c/endometriosis-report.pdf">Final report</a>  
+        - <a href="https://github.com/palautatan/endometriosis">Git repository</a>  
 
 ## Undergraduate Projects
 * Data & Web Technologies for Data Analysis (STA 141B)
