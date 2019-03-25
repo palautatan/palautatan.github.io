@@ -1,5 +1,8 @@
 My undergraduate degree in Statistics is from UC Davis, and I'm now a graduate student at Cal. (Go Aggies, and go Bears!)
 
+## Personal Projects
+* <a href="https://palautatan.github.io/fight/01-map/yelp-api.html">Northern Californian Martial Arts Map</a>
+
 ## Graduate Projects
 * Computational Statistics with Biomedical Applications (PHC 240C)
     + Gene Expression Signatures of Endometriosis
