@@ -2,7 +2,7 @@
 
 ## Graduate Projects
 <i>Computational Statistics with Applications in Biology and Medicine (PHC 240C)</i>
-<b>Gene Expression Signatures of Endometriosis</b> <a href="graduate/phc240c/endometriosis-report.pdf">report</a> and <a href="https://github.com/palautatan/endometriosis">repository</a>
+Gene Expression Signatures of Endometriosis <a href="graduate/phc240c/endometriosis-report.pdf">report</a> and <a href="https://github.com/palautatan/endometriosis">repository</a>
 
 ## Undergraduate Projects
 
