@@ -1,5 +1,8 @@
 <img src="images/iidata_banner.jpg">
 
+## Graduate Projects
+<b>PHC 240C: Biostatistical Methods: Computational Statistics with Applications in Biology and Medicine</b>  
+Gene Expression Signatures of Endometriosis <a href="graduate/phc240c/endometriosis-report.pdf">Final Report</a> and <a href="https://github.com/palautatan/endometriosis">repository</a>
 
 ## Undergraduate Projects
 
@@ -16,12 +19,6 @@
 <b>STA138: Categorical Data Analysis</b>
 <li><a href="assignments/138_project3_1.html" title="Multinomial Logistic Regression">School Dataset (Multinomial Logistic Regression)</a></li>
 <li><a href="assignments/138_project3_2.html" title="Logistic Regression">Baby Dataset (Logistic Regression)</a></li>
-</ul>
-
-<ul>
-<b>yumCoffee: Personal Project</b>
-<li><a href="assignments/coffee.html">Exploring Coffee Flavor Profile (ggplot2 and Dataframes)</a></li>
-<li>This is a personal project I've been working on. I haven't gotten to much yet, but I'm sure as this project grows over the years, I can visualize people's taste profiles and share coffee recommendations more seamlessly.</li>
 </ul>
 
 ### Contact Me
