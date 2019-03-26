@@ -9,7 +9,7 @@ That means "welcome!" in Tagalog. And since we're translating, *palautatan* is h
 
 ## Graduate Projects
 
-<img src="https://raw.githubusercontent.com/palautatan/endometriosis/master/visuals/normalized-heatmap.png" align="right" width="100">
+<img src="https://raw.githubusercontent.com/palautatan/endometriosis/master/visuals/normalized-heatmap.png" align="left" width="200">
 
 * Computational Statistics with Biomedical Applications (PHC 240C)
     + Gene Expression Signatures of Endometriosis
