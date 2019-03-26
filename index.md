@@ -22,4 +22,4 @@ That means "welcome!" in Tagalog. And since we're translating, *palautatan* is h
     - <a href="assignments/138_project3_2.html" title="Logistic Regression">Baby Dataset</a> *(Logistic Regression)*  
     - <a href="assignments/138_project3_1.html" title="Multinomial Logistic Regression">School Dataset</a> *(Multinomial Logistic Regression)*  
 
-![site-banner-2](images/beach.jpg)
+![site-banner-2](images/beach.png)
