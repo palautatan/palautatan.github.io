@@ -10,7 +10,7 @@ That means "welcome!" in Tagalog. And since we're translating, *palautatan* is h
 ## Graduate Projects
 * Computational Statistics with Biomedical Applications (PHC 240C)
     + Gene Expression Signatures of Endometriosis
-        - <a href="graduate/phc240c/endometriosis-report.pdf">Final report</a>  
+        - <a href="graduate/phc240c/endometriosis-report.pdf">Final report (Genomics, machine learning, data munging)</a>  
         - <a href="https://github.com/palautatan/endometriosis">Git repository</a>  
 
 ## Undergraduate Projects
