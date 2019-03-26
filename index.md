@@ -10,7 +10,7 @@ That means "welcome!" in Tagalog. And since we're translating, *palautatan* is h
 ## Gene Expression Signatures of Endometriosis
 <img src="https://raw.githubusercontent.com/palautatan/endometriosis/master/visuals/normalized-heatmap.png" align="left" width="200" border="0px">
 *(Genomics, machine learning)*     
-Endometriosis is an estrogen-dependent condition that affects nearly 10% women of reproductive age and is characterized by chronic pain and inflammation. In this genomics project, our team explored and evaluated machine learning models on their ability to identify subjects with endometriosis based on gene expression intensity alone. See our <a href="graduate/phc240c/endometriosis-report.pdf">final report</a> and <a href="https://github.com/palautatan/endometriosis">git repository</a>.
+Endometriosis is an estrogen-dependent condition that affects nearly 10% women of reproductive age and is characterized by chronic pain and inflammation. In this genomics project, our team explored, built, and evaluated machine learning models on their ability to identify subjects with endometriosis based on gene expression intensity alone to contest models currently in literature. See our <a href="graduate/phc240c/endometriosis-report.pdf">final report</a> and <a href="https://github.com/palautatan/endometriosis">git repository</a>.
 
 ## Undergraduate Projects
 * Data & Web Technologies for Data Analysis (STA 141B)
