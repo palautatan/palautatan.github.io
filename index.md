@@ -7,10 +7,8 @@ That means "welcome!" in Tagalog. And since we're translating, *palautatan* is h
 * Warriors Basketball Analyses (Soon to be posted...)
 * <a href="https://palautatan.github.io/fight/01-map/yelp-api.html">Northern Californian Martial Arts Map</a>
 
+<img src="https://raw.githubusercontent.com/palautatan/endometriosis/master/visuals/normalized-heatmap.png" align="left" width="150">
 ## Graduate Projects
-
-<img src="https://raw.githubusercontent.com/palautatan/endometriosis/master/visuals/normalized-heatmap.png" align="left" width="200">
-
 * Computational Statistics with Biomedical Applications (PHC 240C)
     + Gene Expression Signatures of Endometriosis
         - <a href="graduate/phc240c/endometriosis-report.pdf">Final report</a> *(Genomics, machine learning, data munging)*  
