@@ -4,7 +4,7 @@
 That means "welcome!" in Tagalog. And since we're translating, *palautatan* is how you say "statistics". My name is Edie Espejo, and here are some of my selected work samples. My favorite statistical applications are business, basketball, and biotech.
 
 ## Personal Projects
-* <a href="personal/project-hal.html">An analysis of Project HAL data</a>
+* <a href="personal/project-hal.html">An analysis of Project HAL data</a> (Work in progress...)
 * Warriors Basketball Analyses (Soon to be posted...)
 * <a href="https://palautatan.github.io/fight/01-map/yelp-api.html">Northern Californian Martial Arts Map</a>
 
