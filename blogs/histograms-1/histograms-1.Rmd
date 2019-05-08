@@ -1,5 +1,7 @@
 ---
 title: 'Histograms: More Than Meets The Plot'
+date: May 7, 2019
+author: Edie Espejo
 output:
   html_notebook:
     code_folding: hide
@@ -26,8 +28,8 @@ Our **binwidth** parameter based on the above is $h=\frac{1}{m}$. As you've prob
 
 ```{r data-load, warning=FALSE, message=FALSE, echo=FALSE}
 set.seed(7)
-heart_data  <- read_csv("../data/heart-train.csv", col_names=TRUE)
-labels_data <- read_csv("../data/heart-train-labels.csv", col_names=TRUE)
+heart_data  <- read_csv("../../data/heart-train.csv", col_names=TRUE)
+labels_data <- read_csv("../../data/heart-train-labels.csv", col_names=TRUE)
 heart_data  <- merge(heart_data, labels_data, by="patient_id")
 ```
 
