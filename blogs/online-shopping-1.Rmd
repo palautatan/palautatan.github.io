@@ -1,0 +1,59 @@
+---
+title: "The Data Behind Online Shopping"
+output: html_document
+---
+
+## AB Testing.
+(Kentico.)  
+
+- What should a website have?  
+- Graphic designer: minimal/pretty  
+- Social media: social widgets  
+- Sales team: more product showcases link to cart  
+- Your customer should decide  
+
+- A/B testing  
+- best impact possible? optimize your channels.  
+- Split the version of images/webpages and see how customers will react  
+
+- How can you best choose?  
+- How can you tell what customer prefers?  
+- Probably clicks.  
+- Time spent on page has lots of variance (ugh, tabs)  
+
+- What is ROI?
+
+## More A/B testing
+(Data Science Dojo.)  
+
+- Which works better? Version A or Version B?  
+- "Call to action"  
+- Word choice  
+
+- Criteria for success before you test  
+- Set your hypotheses  
+
+- What is conversion rate?  
+
+- How do you choose sample size?  
+
+- Full factorial test  
+- Multivariate test  
+
+- A/A test.  
+
+## KPI.
+"Key performance indicator."
+
+- Dashboards  
+
+- Cost per conversion?  
+- R O I: Return on investment
+
+
+## References.
+<a href="https://www.youtube.com/watch?v=-Kh0xCKoNvU">Kentico.</a> A/B Testing.
+
+<a href="https://www.youtube.com/watch?v=zFMgpxG-chM">Data science dojo.</a> A/B Testing.
+
+<a href="https://www.klipfolio.com/blog/17-kpi-management-data-driven-manager"> KPI.</a>
