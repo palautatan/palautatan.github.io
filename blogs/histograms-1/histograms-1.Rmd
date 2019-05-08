@@ -24,7 +24,7 @@ $$
 B_1 = [0, \frac{1}{m}), B_2 = [\frac{1}{m}, \frac{2}{m}), ..., B_m = [\frac{m-1}{m}, \frac{m}{m}).
 $$
 
-Our **binwidth** parameter based on the above is $h=\frac{1}{m}$. As you've probably noticed before, `ggplot2` has these options in `geom_histogram()` for you to specify. Let's start our study of histograms by taking a look at a histogram of max heart rates achieved by cardiology patients. In this dataset, our $n=180$.
+Notice that the definition of bins in this way puts us onto the interval $[0,1]$. We will be assuming our draws are $iid \sim f \in [0,1]$. Our **binwidth** parameter based on the above is $h=\frac{1}{m}$. As you've probably noticed before, `ggplot2` has these options in `geom_histogram()` for you to specify. Let's start our study of histograms by taking a look at a histogram of max heart rates achieved by cardiology patients. In this dataset, our $n=180$.
 
 ```{r data-load, warning=FALSE, message=FALSE, echo=FALSE}
 set.seed(7)
@@ -45,7 +45,9 @@ ggplot(heart_data, aes(x=resting_blood_pressure)) +
   theme_minimal()
 ```
 
-In the above histogram, we let $h \approx 3.909$. This doesn't seem like it quite fits the bill of $h=\frac{1}{m}$, but this is because our $X_1, ..., X_n$ are not $iid \sim \, f \in [0,1]$. Let's see what happens if we fix our data to be on the interval $[0,1]$.
+When I teach, this is where I'd call it the "end of the day" for the histogram. We got to see an overall density pattern, and that's all it'd be used for: visual purposes. In this blog, we'll see how histograms are estimators for the true probability density of a random variable.
+
+In the above histogram, $h \approx 3.909$. This doesn't seem like it quite fits the bill of $h=\frac{1}{m}$, but this is because our $X_1, ..., X_n$ are not $iid \sim \, f \in [0,1]$. Let's see what happens if we fix our data to be on the interval $[0,1]$.
 
 
 ```{r}
@@ -193,7 +195,6 @@ where $\bar{f}_n(x)=E(\hat{f}_n(x)) = \frac{p_j}{h} \, \forall x\in B_j$ and whe
 
 Using a function from Wasserman, we calculate a 95% confidence band. The lines below stand for the "top" of the histogram. Imagine the diagram to be shaded below those lines. The middle line stands for $\bar{f}_n(x)$.
 
-
 ```{r}
 # * USING WASSERMAN'S FUNCTION
 source("histograms-1-source.R")
@@ -213,9 +214,18 @@ ggplot(envelope_df, aes(x=grid)) +
   ggtitle("95% Confidence Band for Cardiology Patients' Heart Rate Maximums")
 ```
 
+At least to me, histograms have a lot more life to them than they used to. If you had to remember one thing from this blog, it's that a histogram can have an optimal number of bins that will minimize MISE. This is not to say that when you're visualizing you shouldn't choose bins like I did in my first two figures. Choose bins in this way when you are estimating a probability density.
+
 ## References
 Wasserman, L. (2013). All of Statistics. Springer Science & Business Media.
 
 <a href="https://www.stat.cmu.edu/~larry/all-of-statistics/=Rprograms/density.examples.r">Risk estimation code.</a>
 
 <a href="https://www.stat.cmu.edu/~larry/all-of-statistics/=Rprograms/histogram.confidence.r">Confidence band code.</a>
+
+## Data Source
+Download link <a href="http://archive.ics.uci.edu/ml/datasets/Heart+Disease">here</a>.
+1. Hungarian Institute of Cardiology. Budapest: Andras Janosi, M.D. 
+2. University Hospital, Zurich, Switzerland: William Steinbrunn, M.D. 
+3. University Hospital, Basel, Switzerland: Matthias Pfisterer, M.D. 
+4. V.A. Medical Center, Long Beach and Cleveland Clinic Foundation: Robert Detrano, M.D., Ph.D. 

@@ -1,0 +1,23 @@
+---
+title: 'Kernel Density Estimators'
+date: May 7, 2019
+author: Edie Espejo
+output:
+  html_notebook:
+    code_folding: hide
+  html_document:
+    df_print: paged
+---
+
+```{r libraries, include=FALSE, message=FALSE, warning=FALSE}
+library(readr)
+library(ggplot2)
+library(dplyr, quietly=TRUE)
+```
+
+Earlier, I did a blog on histogram estimators.
+
+
+## References
+Wasserman, L. (2013). All of Statistics. Springer Science & Business Media.
+
