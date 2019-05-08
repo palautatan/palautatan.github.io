@@ -1,6 +1,6 @@
 ---
 title: 'Kernel Density Estimators'
-date: May 7, 2019
+date: May 8, 2019
 author: Edie Espejo
 output:
   html_notebook:
@@ -13,11 +13,155 @@ output:
 library(readr)
 library(ggplot2)
 library(dplyr, quietly=TRUE)
+library(ks)
+library(gridExtra)
 ```
 
-Earlier, I did a blog on histogram estimators.
+Earlier, I did a blog on histogram estimators and how they asymptotically approximate a probability density. Histogram estimators look like step functions and are discontinuous which imply convergene to a smooth density may take some time compared to an probability density estimator that is already smooth. Kernel density estimators are smoother than histogram estimators, so let's study those!
 
+## Definitions
+Let $X_1, X_2, ... X_n \sim f$ be our sample. Let a **kernel** $K$ be a smooth function that satisfies the following:
+
+- $K(x)>0$  
+- $\int K(x) dx = 1$  
+- $\int x K(x) dx = 0$, i.e. $E(X)=0$  
+- $\sigma^2_k = \int x^2 K(x) dx >0$  
+
+A **kernel density estimator (KDE)** $\hat{f}$ takes in a kernel $K$ and positive valued bandwidth $h$ and is defined by  
+
+$$
+\hat{f}(x) = \frac{1}{n} \sum_{i=1}^{n} \frac{1}{h} K(\frac{x-X_i}{h}).
+$$
+
+The **bandwidth** $h$ controls how smooth the estimator is.  
+
+- When $h \to 0$, the estimator becomes spiky/wiggly.  
+- When $h \to \infty$, the estimator becomes smoother/more uniform. 
+
+The choice of $K$ to estimate a density is proven to be not as crucial as the choice of $h$.
+
+## Estimating a Density
+We're going to start using a dataset on Ames, Iowa housing prices. Let's see how these houses look on a histogram and boxplot.
+
+```{r, echo=FALSE}
+ames <- read_csv("../../data/house-prices-train.csv", col_names=TRUE)
+ggplot(ames, aes(x=SalePrice)) + 
+  geom_histogram(binwidth=15000, col="skyblue3", fill="skyblue") +
+  xlab("sale price") +
+  ggtitle("House Prices in Ames, Iowa (2006-2010)") +
+  theme_classic()
+```
+
+```{r, echo=FALSE}
+ggplot(ames, aes(y=SalePrice)) + 
+  geom_boxplot(col="skyblue3", fill="skyblue") +
+  ylab("sale price") +
+  ggtitle("House Prices in Ames, Iowa (2006-2010)") +
+  theme_classic() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+```
+
+What's obvious from these two plots is that we have a clear center near the median of the distribution, but a whole bunch of outliers.
+
+### By Theorem
+The best theoretical kernel density estimator will minimize error. The MISE for a KDE is found to be 
+
+$$
+R(f, \hat{f}_n) \approx \frac{1}{4}\sigma^4_Kh^4 \int (f''(x))^2 + \frac{\int K^2(x) dx}{nh}
+$$
+
+where $\sigma^2_K=\int x^2 K(x) dx$. The bandwidth $h$ that minimizes $R(f, \hat{f}_n)$ is 
+
+$$
+h^* = \frac{c_1^{-2/5}c_2^{1/5}c_3^{-1/5}}{n^{1/5}}
+$$
+
+where
+
+- $c_1 = \int x^2K(x) dx$,  
+- $c_2 = \int K(x)^2 dx$,  
+- and $c_3 = \int (f''(x))^2 dx$.  
+
+When $h^*$ is the bandwidth, $R(f, \hat{f}_n) \approx \frac{c_4}{n^{4/5}}$ for some constant $c_4$ greater than 0. Kernel estimators converge at a rate of $n^{-4/5}$ which is faster than histogram estimators' convergence rate of $n^{-2/3}$. While all this is awesome, of course in practice, we don't know what the true $f(x)$ is. In fact, we're just en route to estimating $f(x)$.
+
+### By Estimation
+We can estimate risk with
+
+$$
+\hat{J}(h) = \int \hat{f}^2(x) dz - \frac{2}{n} \sum_{i=1}^{n} \hat{f}_{(-i)}(X_i).
+$$
+
+We have that $\forall \, h>0, E[\hat{J}(h)]=E[J(h)]$. An alternative way to calculate risk is with
+
+$$
+\hat{J}(h) \approx \frac{1}{hn^2} \sum_{i} \sum_{j} K^* \big( \frac{X_i-X_j}{h} \big) + \frac{2}{nh}K(0)
+$$
+
+where $K^*(x)=K^{(2)}(x)-2K(x)$ and $K^(2)(z)=\int K(z-y)K(y) dy$. Of course now we will want to choose some $h$ that minimizes $\hat{J}(h)$. **Stone's Theorem** (*20.16 Theorem from Wasserman's book*) explains why minimizing this MISE risk estimate will give us our optimal bandwidth. The theorem says that if $f$ is bounded, then 
+
+$$
+\frac{\int \big(f(x)-\hat{f}_{h_n}(x)\big)^2}{\text{inf}_h \int \big(f(x)-\hat{f}_{h}(x)\big)^2} \overset{P}\to 1.
+$$
+
+That is, the smallest theoretical bandwidth $h$ and the cross-validated bandwidth $h_n$ will perform asymptotically well in place of each other.
+
+### Back to Ames, Iowa
+Our next goal is to estimate the density of Ames, Iowa home prices from 2006-2010 using kernel density estimation. We will be using the package `ks` as recommended by Deng and Wickham.
+
+```{r}
+x      <- ames %>% pull(SalePrice)
+bandwidth <- hpi(x, binned=TRUE)
+```
+
+The scalar bandwidth selected by `hpi` is `r bandwidth` chosen by a plug-in estimator from Wand and Jones (1994). There is a lot of research in the area of bandwidth selection. Because I am no expert, I'm going to keep this default plug-in estimator as my bandwidth with the belief that it will minimize error in a founded, theoretical way that builds off of the intuition we looked at earlier.
+
+```{r}
+fhat_pos <- ks::kde(x=x, adj.positive=0, positive=TRUE)
+kde_df <- data.frame(cbind(fhat=fhat_pos$estimate, eval_x=fhat_pos$eval.points))
+```
+
+To perform our KDE fit, I set `adj.positive=0, positive=TRUE` in the `kde()` function because, unfortunately for us, there are no negative house prices. (*There ain't no such thing as a free house!*)
+
+```{r}
+kde_plot <- ggplot(kde_df, aes(x=eval_x)) +
+  geom_line(aes(x=eval_x, y=fhat), col="skyblue3") +
+  xlab("sale price") +
+  ylab("approximated density") +
+  ggtitle("Kernel Density Estimator") +
+  theme_classic()
+
+original <- ggplot(ames, aes(x=SalePrice)) + 
+  geom_histogram(binwidth=15000, col="skyblue3", fill="skyblue") +
+  xlab("sale price") +
+  ylab("true count") +
+  ggtitle("Original Data") +
+  theme_classic()
+
+grid.arrange(original, kde_plot, ncol=2)
+```
+
+Plotted side by side are the original histogram and the kernel density estimator. The estimator looks pretty darn good! Pretty amazing! This KDE is way better than its histogram estimator, and there's no kidding this would converge a lot faster to the truth than a histogram.
+
+Also, though `ks` is already used by many, I'd like to take the time to praise how thorough and customizable your KDE experience is while using this `R` library. It's good for beginners (like me) and more advanced users who know exactly what they want from their density estimate.
+
+## Questions for later
+I don't know what $y$ and $z$ are in the risk estimation formula.
 
 ## References
-Wasserman, L. (2013). All of Statistics. Springer Science & Business Media.
 
+Deng, H. Wickham, H. (2011). Density Estimation in R. [<a href="https://vita.had.co.nz/papers/density-estimation.pdf">PDF</a>].
+
+Duong, T. (2007). ks: Kernel density estimation and kernel discriminant analysis for multivariate data in R. Journal of Statistical Software, 21(7), 1-16. [<a href="https://cran.r-project.org/web/packages/ks/ks.pdf">PDF</a>].
+
+Wand, M.P. & Jones, M.C. (1994) Multivariate plug-in bandwidth selection. Computational Statistics, 9, 97-116.
+
+Wasserman, L. (2013). All of Statistics. Springer Science & Business Media. [<a href="https://www.stat.cmu.edu/~larry/all-of-statistics/">Text</a>].
+
+
+
+
+
+## Data Source
+The Ames Housing Dataset. Info is available <a href="http://jse.amstat.org/v19n3/decock.pdf">here</a> and download is available through <a href="https://www.kaggle.com/c/house-prices-advanced-regression-techniques">Kaggle</a>.

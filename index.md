@@ -14,7 +14,8 @@ That means "welcome!" in Tagalog. And since we're translating, *palautatan* is h
 Endometriosis is an estrogen-dependent condition that affects nearly 10% women of reproductive age and is characterized by chronic pain and inflammation. In this genomics project, our team explored, built, and evaluated machine learning models on their ability to identify subjects with endometriosis based on gene expression intensity alone to contest models currently in literature. See our <a href="graduate/phc240c/endometriosis-report.pdf">final report</a> and <a href="https://github.com/palautatan/endometriosis">git repository</a>.
 
 ## Textbook to Code Blogs
-* <a href="blogs/histograms-1/histograms-1.nb.html">Histograms: More Than Meets The Plot</a>
+* <a href="blogs/histograms-1/histograms-1.nb.html">Histograms: More Than Meets The Plot</a>  
+* <a href="blogs/kde-1/kde-1.nb.html">Kernel Density Estimators</a>  
 
 ## Undergraduate Projects
 * Data & Web Technologies for Data Analysis (STA 141B)

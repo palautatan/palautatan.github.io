@@ -219,13 +219,14 @@ At least to me, histograms have a lot more life to them than they used to. If yo
 ## References
 Wasserman, L. (2013). All of Statistics. Springer Science & Business Media.
 
-<a href="https://www.stat.cmu.edu/~larry/all-of-statistics/=Rprograms/density.examples.r">Risk estimation code.</a>
+- <a href="https://www.stat.cmu.edu/~larry/all-of-statistics/=Rprograms/density.examples.r">Risk estimation code.</a>  
 
-<a href="https://www.stat.cmu.edu/~larry/all-of-statistics/=Rprograms/histogram.confidence.r">Confidence band code.</a>
+- <a href="https://www.stat.cmu.edu/~larry/all-of-statistics/=Rprograms/histogram.confidence.r">Confidence band code.</a>  
 
 ## Data Source
 Download link <a href="http://archive.ics.uci.edu/ml/datasets/Heart+Disease">here</a>.
-1. Hungarian Institute of Cardiology. Budapest: Andras Janosi, M.D. 
-2. University Hospital, Zurich, Switzerland: William Steinbrunn, M.D. 
-3. University Hospital, Basel, Switzerland: Matthias Pfisterer, M.D. 
-4. V.A. Medical Center, Long Beach and Cleveland Clinic Foundation: Robert Detrano, M.D., Ph.D. 
+
+1. Hungarian Institute of Cardiology. Budapest: Andras Janosi, M.D.  
+2. University Hospital, Zurich, Switzerland: William Steinbrunn, M.D.   
+3. University Hospital, Basel, Switzerland: Matthias Pfisterer, M.D.   
+4. V.A. Medical Center, Long Beach and Cleveland Clinic Foundation: Robert Detrano, M.D., Ph.D.   
