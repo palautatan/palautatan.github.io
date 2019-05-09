@@ -142,7 +142,7 @@ original <- ggplot(ames, aes(x=SalePrice)) +
 grid.arrange(original, kde_plot, ncol=2)
 ```
 
-Plotted side by side are the original histogram and the kernel density estimator. The estimator looks pretty darn good! Pretty amazing! This KDE is way better than its histogram estimator, and there's no kidding this would converge a lot faster to the truth than a histogram.
+Plotted side by side are the original histogram and the kernel density estimator. The estimator looks pretty darn good! Pretty amazing! This KDE is way better than its histogram estimator, and there's no kidding in this would converge a lot faster to the truth than a histogram.
 
 Also, though `ks` is already used by many, I'd like to take the time to praise how thorough and customizable your KDE experience is while using this `R` library. It's good for beginners (like me) and more advanced users who know exactly what they want from their density estimate.
 
@@ -151,6 +151,9 @@ I don't know what $y$ and $z$ are in the risk estimation formula.
 
 ## References
 
+Conlin, M. 
+Kernel Density Estimation [<a href="https://mathisonian.github.io/kde/">URL</a>].
+
 Deng, H. Wickham, H. (2011). Density Estimation in R. [<a href="https://vita.had.co.nz/papers/density-estimation.pdf">PDF</a>].
 
 Duong, T. (2007). ks: Kernel density estimation and kernel discriminant analysis for multivariate data in R. Journal of Statistical Software, 21(7), 1-16. [<a href="https://cran.r-project.org/web/packages/ks/ks.pdf">PDF</a>].
@@ -158,8 +161,6 @@ Duong, T. (2007). ks: Kernel density estimation and kernel discriminant analysis
 Wand, M.P. & Jones, M.C. (1994) Multivariate plug-in bandwidth selection. Computational Statistics, 9, 97-116.
 
 Wasserman, L. (2013). All of Statistics. Springer Science & Business Media. [<a href="https://www.stat.cmu.edu/~larry/all-of-statistics/">Text</a>].
-
-
 
 
 
