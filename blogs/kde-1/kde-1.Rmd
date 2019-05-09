@@ -38,7 +38,14 @@ The **bandwidth** $h$ controls how smooth the estimator is.
 - When $h \to 0$, the estimator becomes spiky/wiggly.  
 - When $h \to \infty$, the estimator becomes smoother/more uniform. 
 
-The choice of $K$ to estimate a density is proven to be not as crucial as the choice of $h$.
+What we see here is that we need to specify a kernel $K$ and a bandwidth $h$. There are plenty of different kernels one could use, but of the popular ones are  
+
+- Epanechnikov, which fits quite closely to the original data's histogram shape  
+- Normal, which follows normal distributions across your data  
+- Uniform, which is similar to normal but with uniform distributions  
+- Triangular, which is tracing your data with triangles  
+
+All of these shapes are affected by your choice of $h$. A larger bandwidth will allow more data points to be modeled by the kernel. A smaller one will only let points that are closeby to give weight, leading to KDE's that fit quite tightly to the observed data. The choice of $K$ to estimate a density is proven to be not as crucial as the choice of $h$.
 
 ## Estimating a Density
 We're going to start using a dataset on Ames, Iowa housing prices. Let's see how these houses look on a histogram and boxplot.
