@@ -13,7 +13,7 @@ output:
     number_sections: true
 ---
 
-Linear regression has made its mark in at least 5 quarter/semester long classes in my life. In different courses under the guidance of different professors at different institutions, regression was presented differently. For me, it's another regression unit season, so I wanted to challenge myself and compile all I know about the famous and infamous regression line.
+Linear regression has made its mark in at least 5 quarter/semester long classes in my life. In those 5 courses under the guidance of several professors at two separate institutions, regression was presented differently. For me, it's another regression season, so I wanted to challenge myself and compile all I know about the famous and infamous regression line.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 library(broom)
@@ -26,12 +26,12 @@ library(mvtnorm, quietly=TRUE)
 
 # Attack vs. Special Attack
 
-Pokemon, for you aliens and living-under-rock-peoples, are creatures from a televised series of the same name. These creatures are either wild or under the coaching guidance of Pokemon trainers who exercise their Pokemon in sportsmanly battle to increase their stats. A Pokemon has many stats, but two of which are "attack" and "special attack".
+Pokemon, for you aliens and living-under-rock-peoples, are creatures from a televised series of the same name. These creatures are either wild or under the coaching direction of Pokemon trainers who exercise their Pokemon in sportsmanly battle to increase their stats. A Pokemon has many stats, but two of which are "attack" and "special attack".
 
 ## Regression definitions
-To start off, here's our data on a scatterplot. I let "attack" be our **independent** variable. Independent variables can also be referred to "predictors", "covariates", or "features". The "special attack" stat, I let be our **dependent** variable which relies on the independent variable to determine its value.
+To start off, here's our data on a scatterplot. I let the "attack" level of a pokemon be our **independent** variable. Independent variables can also be referred to "predictors", "covariates", or "features". The "special attack" stat, I let be our **dependent** variable which relies on the independent variable to determine its value.
 
-In this particular scenario, we will be interested in estimating the **regression function** $r(x)=E(Y|X=x)$ with our data. We are under the assumption that the relationship between attack, our $X$, and special attack, $Y$.
+In this scenario, we will be interested in estimating the **regression function** $r(x)=E(Y|X=x)$ with our data. We are under the assumption that the relationship between attack, our $X$, and special attack, $Y$.
 
 ```{r load-data, warning=FALSE, message=FALSE}
 pokemon <- read_csv("../../data/pokemon.csv")
@@ -60,7 +60,7 @@ pokemon_sub %>% select(Name, Type1, Type2, Attack, Sp.Atk) %>% head
 
 Our goal is to predict $Y$, a Pokemon's special attack stat, based on its attack stat $X$. Recall that our regression function was $r(x)=E(Y|X=x)$. We can interpret this expectation as what we would expect of our variable $Y$ given that we are only looking at a "vertical strip" at some given $X=x$.
 
-For example, if we were interested in $E(Y|X=95)$, we would be concerning ourselves with the data lying on the vertical line below.
+For example, if we were interested in $E(Y|X=95)$, we would be concerning ourselves with the data lying only on the vertical segment below.
 
 ```{r ggplot-scatter-strip}
 segment_values <- pokemon_sub %>% filter(Attack==95) %>% summarize(min=min(Sp.Atk), max=max(Sp.Atk))
@@ -80,10 +80,10 @@ Based on our data, our plug-in estimator for $E(Y|X=x)$ is the mean within that 
 pokemon_sub %>% filter(Attack==95) %>% summarize(sp_attack_mean=mean(Sp.Atk))
 ```
 
-Our ideal linear regression function for special attack on attack draws a line through our data points such that the distances between our observed values of special attack $Y_i$ are communally as close to our predicted values $\hat{Y}_i$ as possible. We will keep predicting $E(Y|X=x)$ with the plug-in estimate of the mean for that strip based on our data. Based on <a href="http://prob140.org/textbook/chapters/Chapter_22/04_Least_Squares_Predictor">proof from Adhikari</a>, these stripwise estimators are the least squares predictors for $Y|X$.
+Our ideal linear regression function for special attack on attack draws a line through our data points such that the distances between our observed values of special attack $Y_i$ are communally as close to our predicted values $\hat{Y}_i$ as possible. We will be predicting $E(Y|X=x)$ with the plug-in estimate of the mean for that strip based on our data. Based on <a href="http://prob140.org/textbook/chapters/Chapter_22/04_Least_Squares_Predictor">proof from Adhikari</a>, these stripwise estimators are the least squares predictors for $Y|X$.
 
 # Defining the Regression Line
-I have learned two ways of defining my regression line. What they share of course is this format
+I have learned two ways of defining my regression line. What they share is this format
 
 $$
 Y=[\text{Slope}]X + [\text{Y-Intercept}].
@@ -587,11 +587,11 @@ In order to make predictions, you use the `predict()` function. I used: `predict
 gen_6_predictions <- predict(pokemon_model, newdata=gen_6 %>% select(Attack))
 ```
 
-Below, I have presented the errors.
+Below, I have presented the errors $y_i-\hat{y}_i$.
 
 ```{r}
 gen_6_predictions <- cbind(gen_6 %>% select(Name, Type1, Type2, Attack, Sp.Atk), Sp.Atk.Pred=gen_6_predictions)
-gen_6_predictions <- gen_6_predictions %>% mutate(Error=Sp.Atk.Pred-Sp.Atk)
+gen_6_predictions <- gen_6_predictions %>% mutate(Error=Sp.Atk-Sp.Atk.Pred)
 gen_6_predictions
 ```
 
@@ -607,8 +607,29 @@ ggplot(gen_6_predictions, aes(x=Attack, y=Sp.Atk)) +
   theme_minimal()
 ```
 
+In the end, I'm not surprised our predictions were't accurate. Our $R^2$ value was only 0.33. This example focused on fire, water, and grass pokemon with no reason why. Here are scatterplots for attack versus special attack for all the provided pokemon types.
+
+```{r}
+ggplot(data=pokemon, aes(x=Attack, y=Sp.Atk, col=Type1)) +
+  geom_point(alpha=0.5) +
+  facet_wrap(~Type1) + 
+  theme_minimal() +
+  xlab("attack") +
+  ylab("special attack") +
+  theme(legend.position="none") +
+  ggtitle("Attack and Special Attack Between Pokemon Types")
+```
+
+The relationship between attack and special attack is seemingly unique to each of the pokemon types. In the future, I really ought to do a thorough data exploration before committing to a linear model.
+
+I will close my analysis with a quote from the professor of my undegrad capstone course, the ever incredible <a href="http://www.stat.ucdavis.edu/~duncan/">Professor Duncan Temple Lang</a>.
+
+<font size="5">*"Immerse in your data so that you should not be surprised by your results."*</font>  
+
+<font size="3">-Duncan Temple Lang</font>
+
 # Common Errors
-Linear regression is so popular, but it so incredibly misused. Did you notice how difficult it was to derive the coefficients and theory but how easy software makes the implementation? This becomes a terrible problem.
+Linear regression is so popular, but it is just almost as popularly misused. Did you notice how difficult it was to derive the coefficients and theory but how easy software makes the implementation? This becomes a terrible problem.
 
 Many courses and many disciplines teach regression as if assumptions don't matter. But they do! In order to interpret a linear model and to at all find confidence (not statistical confidence) that your regression model will do any good, you need to assess your assumptions. This requires making plots and some deep thought about whether assumptions are even practical.
 
@@ -616,11 +637,13 @@ Correlation between variables has also led to the belief that correlation implie
 
 Extrapolation, using your fitted line to predict for values outside of the line, is very bad! And I've seen many students do this, so I don't think it's nuts of me to believe that they've learned it from someone or there are others who have not learned this but still do it.
 
-Lastly, generalization. I spoke about the data generating process that gave rise to my data and that only for other observations that have been sampled from that same process will I be able to predict special attack for. To be clear, that means I cannot Yu-Gi-Oh or Digimon stats to predict special attack! Pokemon only!
+Lastly, generalization. I spoke about the data generating process that gave rise to my data and that only for other observations that have been sampled from that same process will I be able to predict special attack for. To be clear, that means I cannot use Yu-Gi-Oh or Digimon stats to predict special attack! Pokemon only!
 
 
 # Concluding remarks
-I'm pretty glad I did this synthesis. Hope you liked it. If you have questions/concerns/corrections, do let me know. I want to make sure that I'm not part of the regression misuse and abuse clan.
+I'm pretty glad I did this synthesis. Hope you liked it. This was certainly a product of all my educators who gave me their best efforts.
+
+If you have questions,concerns, or corrections, do let me know. I want to be on the right side of the regression schism.
 
 
 # References
