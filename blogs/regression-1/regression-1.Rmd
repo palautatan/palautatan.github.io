@@ -1,0 +1,646 @@
+---
+title: "Simple Linear Regression with Pokemon"
+author: Edie Espejo
+date: 11 May 2019
+output:
+  html_notebook:
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+    number_sections: true
+---
+
+Linear regression has made its mark in at least 5 quarter/semester long classes in my life. In different courses under the guidance of different professors at different institutions, regression was presented differently. For me, it's another regression unit season, so I wanted to challenge myself and compile all I know about the famous and infamous regression line.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(broom)
+library(ggplot2)
+library(scales)
+library(dplyr, quietly=TRUE)
+library(readr, quietly=TRUE)
+library(mvtnorm, quietly=TRUE)
+```
+
+# Attack vs. Special Attack
+
+Pokemon, for you aliens and living-under-rock-peoples, are creatures from a televised series of the same name. These creatures are either wild or under the coaching guidance of Pokemon trainers who exercise their Pokemon in sportsmanly battle to increase their stats. A Pokemon has many stats, but two of which are "attack" and "special attack".
+
+## Regression definitions
+To start off, here's our data on a scatterplot. I let "attack" be our **independent** variable. Independent variables can also be referred to "predictors", "covariates", or "features". The "special attack" stat, I let be our **dependent** variable which relies on the independent variable to determine its value.
+
+In this particular scenario, we will be interested in estimating the **regression function** $r(x)=E(Y|X=x)$ with our data. We are under the assumption that the relationship between attack, our $X$, and special attack, $Y$.
+
+```{r load-data, warning=FALSE, message=FALSE}
+pokemon <- read_csv("../../data/pokemon.csv")
+names(pokemon) <- gsub(" ", "", names(pokemon))
+pokemon_sub <- pokemon %>% filter(Type1 %in% c("Water", "Fire", "Grass"))
+pokemon_sub <- pokemon_sub %>% filter(Generation!=6)
+```
+
+```{r ggplot-scatter}
+ggplot(pokemon_sub, aes(x=Attack, y=Sp.Atk)) + 
+  geom_point(alpha=0.5) + 
+  xlab("attack") +
+  ylab("special attack") +
+  ggtitle("Attack v. Special Attack in Water, Fire, and Grass Pokemon") +
+  theme_minimal()
+```
+
+## Method of least squares
+To estimate our regression function, we use the **least squares method** which minimizes the sum of squares of vertical differences from the regression line to the observed values.
+
+Our data are in the format $(X_1, Y_1), ..., (X_n, Y_n)$ where $n=$ `r pokemon_sub %>% nrow` is the total number of rows in the following dataframe. Here is a preview of the first 6 Pokemon in the dataset with their types and attack stats.
+
+```{r}
+pokemon_sub %>% select(Name, Type1, Type2, Attack, Sp.Atk) %>% head
+```
+
+Our goal is to predict $Y$, a Pokemon's special attack stat, based on its attack stat $X$. Recall that our regression function was $r(x)=E(Y|X=x)$. We can interpret this expectation as what we would expect of our variable $Y$ given that we are only looking at a "vertical strip" at some given $X=x$.
+
+For example, if we were interested in $E(Y|X=95)$, we would be concerning ourselves with the data lying on the vertical line below.
+
+```{r ggplot-scatter-strip}
+segment_values <- pokemon_sub %>% filter(Attack==95) %>% summarize(min=min(Sp.Atk), max=max(Sp.Atk))
+
+ggplot(pokemon_sub, aes(x=Attack, y=Sp.Atk)) + 
+  geom_segment(aes(y=55, yend=125, x=95, xend=95), col="red3", lwd=1.5, alpha=0.25) +
+  geom_point(alpha=0.5) + 
+  xlab("attack") +
+  ylab("special attack") +
+  ggtitle("Attack v. Special Attack in Water, Fire, and Grass Pokemon") +
+  theme_minimal()
+```
+
+Based on our data, our plug-in estimator for $E(Y|X=x)$ is the mean within that vertical strip. We calculate this to be $\approx 93.67$.
+
+```{r}
+pokemon_sub %>% filter(Attack==95) %>% summarize(sp_attack_mean=mean(Sp.Atk))
+```
+
+Our ideal linear regression function for special attack on attack draws a line through our data points such that the distances between our observed values of special attack $Y_i$ are communally as close to our predicted values $\hat{Y}_i$ as possible. We will keep predicting $E(Y|X=x)$ with the plug-in estimate of the mean for that strip based on our data. Based on <a href="http://prob140.org/textbook/chapters/Chapter_22/04_Least_Squares_Predictor">proof from Adhikari</a>, these stripwise estimators are the least squares predictors for $Y|X$.
+
+# Defining the Regression Line
+I have learned two ways of defining my regression line. What they share of course is this format
+
+$$
+Y=[\text{Slope}]X + [\text{Y-Intercept}].
+$$
+
+As we've learned in pre-algebra, we have a **slope** that describes how a unit increase in our $x$ variable will increase our $y$. Our **y-intercept**, which is sometimes outside of our prediction range of values, will tell us what we would expect $y$ to be if our $x$ was 0.
+
+## Probabilistically
+Just last semester (Fall 2018), I had the priviledge of taking probability theory with the well-known <a href="https://www.stat.berkeley.edu/~ani/">Professor Ani Adhikari</a> who has won many a teach accolade including <a href="https://www.dailycal.org/2019/04/18/best-of-berkeley-campus/">2019's Daily Californian Best Professor</a>.
+
+When I was in Dr. Adhikari's class, I was rather astounded at how little I knew about the basis of regression. I had taken an entire Regression Analysis class and mathematical statistics, but the narrative of the bivariate normal (BVN) distribution never came up. With this as the case, I thought it'd be inappropriate if I did not write a section on simple linear regression from a probabilistic perspective.
+
+Let the random variable $Z$ is distributed as standard normal. To specify the standard normal distribution, we provide mean $\mu=0$ and variance and $\sigma^2=1$.
+
+```{r}
+mu   <- 0
+sd   <- 1
+x    <- seq(from = mu - 3*sd, to = mu + 3*sd, by = .01)
+df   <- data.frame(x=x, y=dnorm(x, mean=mu, sd=sd))
+
+# * SAUER'S SHADING FUNCTION
+shade_curve <- function(MyDF, zstart, zend, fill = "red", alpha = .5) {
+  geom_area(data = subset(MyDF, x >= mu + zstart*sd
+                          & x < mu + zend*sd),
+            aes(y=y), fill = fill, color = NA, alpha = alpha)
+}
+
+# * PLOTTING
+my_col <- "red3"
+ggplot(df, aes(x=x, y=y)) + geom_line() +
+  shade_curve(MyDF=df, zstart=-1, zend=1,  fill=my_col, alpha=0.3) +
+  shade_curve(MyDF=df, zstart=1,  zend=2,  fill=my_col, alpha=0.5) +
+  shade_curve(MyDF=df, zstart=-2, zend=-1, fill=my_col, alpha=0.5) +
+  shade_curve(MyDF=df, zstart=2,  zend=6,  fill=my_col, alpha=0.7) +
+  shade_curve(MyDF=df, zstart=-3, zend=-2, fill=my_col, alpha=0.7) +
+  scale_x_continuous(breaks=-3:3) +
+  scale_y_continuous(breaks=NULL) +
+  theme_minimal() +
+  ylab("") +
+  xlab("possible values of Z") +
+  ggtitle("Standard Normal Z")
+```
+
+An extension to the standard normal distribution is the **bivariate normal (BVN) distribution**. Two random variables $X$ and $Y$ that are distributed as bivariate normal achieve a "football shape" in Euclidean space $\textbf{R}^2$. To fully determine a BVN distribution between two random variables, we provide a mean vector $[\mu_X, \mu_Y]$ and the covariance matrix between $X$ and $Y$.
+
+Here's a bivariate normal distribution with mean vector 
+
+$$
+\mu = [0, 0]
+$$
+
+and covariance matrix of 
+
+$$
+\Sigma =
+\begin{bmatrix} 
+1 & \rho \\
+\rho & 1 
+\end{bmatrix}.
+$$
+
+```{r}
+# * EDITED FROM STEORTS' CODE AND STACK
+# * https://stackoverflow.com/questions/36221596/plot-multivariate-gaussian-contours-with-ggplot2
+# * https://stackoverflow.com/questions/29476925/change-colors-of-raster-plot-in-ggplot2
+range_x <- seq(-3, 3, length.out=100)
+range_y <- range_x
+
+mu    <- c(0, 0)
+rho   <- 0.6
+sigma <- matrix(c(1, rho, rho, 1), nrow=2)
+
+# * CREATE X/Y VALUES AND PROBABILITIES
+data.grid <- expand.grid(range_x, range_y)
+q_samp    <- cbind(data.grid,
+                   p=dmvnorm(data.grid, mean=mu, sigma=sigma))
+names(q_samp) <- c("range_x", "range_y", "probability")
+
+# * PLOT
+ggplot(q_samp, aes(x=range_x, y=range_y, z=probability)) + 
+  geom_raster(aes(fill=probability)) +
+  geom_contour(col="white", alpha=0.8) +
+  coord_fixed(xlim = c(-3, 3), ylim = c(-3, 3), ratio = 1) +
+  xlab("possible values of random variable X") +
+  ylab("possible values of random variable Y") +
+  theme_minimal() +
+  scale_fill_gradientn(colours=c("white","red2","red3"))
+```
+
+Flashback to the vertical strips we were talking about earlier, we know that $E(Y|X)$ is the least squares predictor of $Y$ based on any function of our covariate $X$. Because we are under the assumption that the relationship between our variables is linear, we will now look at functions of $X$ in the form $f(X)=mX+b$.
+
+Our task now is now to minimize **mean squared error (MSE)** over values of our slope $m$ and y-intercept $b$. The formula for MSE is
+
+$$
+MSE(m,b) = E[(Y-(mX+b))^2].
+$$
+
+We do this with calculus and rules of expectation. These steps are <a href="http://prob140.org/textbook/chapters/Chapter_24/02_Linear_Least_Squares">provided by Adhikari</a>.
+
+### Minimizing w.r.t. the y-intercept
+We begin by letting $m$ be fixed so we can optimize over $b$.
+
+$$
+\begin{aligned}
+ MSE(m,b) 
+ &= E[(Y-(mX+b))^2]
+ \\
+ &= E[((Y-mX)-b)^2]
+ \\
+ &= E[(Y-mX)^2] - 2bE[Y-mX] + b^2
+\end{aligned}
+$$
+
+We'll take the derivative with respect to $b$.
+
+$$
+\frac{\partial}{\partial b} MSE(m,b) = -2E[Y-mX] + 2b
+$$
+
+We set this equal to 0. Finally,
+
+$$
+0 = -2E[Y-mX] + 2b \implies b^* = E[Y-mX] = E[Y] - mE[X].
+$$
+
+To be thorough, we have to check the second derivative is a minimum.
+
+$$
+\frac{\partial^2}{\partial b^2} MSE(m,b) = 2
+$$
+
+Our resulting sign is positive which implies we have a minimum.
+
+### Minimizing w.r.t. the slope
+
+Now, we will solve for $m$, but replacing $b$ with our $b^*$.
+
+$$
+\begin{aligned}
+ MSE(m,b^*) 
+ &= E[(Y-(mX+b^*))^2]
+ \\
+ &= E[Y-(mX+E[Y]-mE[X])^2]
+ \\
+ &= E[[(Y-E[Y])-m(X-E[X])]^2]
+\end{aligned}
+$$
+
+We have now changed our MSE formula into an equation that only contains $m$. We'll continue simplifying below.
+
+$$
+\begin{aligned}
+  MSE(m,b^*) 
+  &= E[[(Y-E[Y])-m(X-E[X])]^2]
+  \\
+  &= E((Y-E[Y])^2) - 2mE[(X-E[X])(Y-E[Y])] + m^2E([X-E[X]])^2
+  \\
+  &= \text{Var}(Y) - 2m\text{Cov}(X,Y) + m^2\text{Var}(X)
+\end{aligned}
+$$
+
+After all that calculation, look at that beautiful result! We can now take the derivative with respect to $m$ to retrieve our $m^*$.
+
+$$
+\frac{\partial}{\partial m} MSE(m,b^*) = -2\text{Cov}(X,Y) + 2m\text{Var}(X)
+$$
+
+When we set the above to 0, we have this result.
+
+$$
+0 = -2\text{Cov}(X,Y) + 2m\text{Var}(X) \implies m^* = \frac{\text{Cov}(X,Y)}{\text{Var}(X)}
+$$
+
+Again, we check the second derivative.
+
+$$
+\frac{\partial^2}{\partial m^2} MSE(m,b^*) = 2\text{Var}(X)
+$$
+
+This value is strictly positive because variance is nonnegative, thus we are sure we have a minimum.
+
+### Least squares coefficients
+
+The values of $b^*$ and $m^*$ are our least squares coefficients.
+
+$$
+\begin{align}
+  m^* 
+  &= \frac{\text{Cov}(X,Y)}{\text{Var}(X)}
+  \\
+  b^*
+  &= E[Y] - m^*E[X]
+\end{align}
+$$
+
+The best linear predictor of $E(Y|X)$, regardless of the true relationship between $X$ and $Y$, is the least squares line defined by 
+
+$$
+\begin{align}
+  Y 
+  &= m^*X+b^*
+  \\
+  &= \frac{\text{Cov}(X,Y)}{\text{Var}(X)}  + E[Y] - m^*E[X]
+  \\
+  &= \rho \frac{\sigma_Y}{\sigma_X} + \big(\mu_Y - \rho \frac{\sigma_Y}{\sigma_X} \mu_X\big)
+\end{align}
+$$
+
+When $X$ and $Y$ have a joint distribution that is bivariate normal, then the best predictor of $E(Y|X)$ is truly linear. That best line is $Y=m^*X+b^*$. Even when $X$ and $Y$ are not jointly bivariate normal, this line is *still* the best linear predictor for $E(Y|X)$, although it may not always be appropriate. (See the section on [common errors](#Common Errors).)
+
+Also to be well noted, the variance of $Y|X$ is
+
+$$
+\text{Var}(Y|X) = (1-\rho^2)\sigma_Y^2.
+$$
+
+Notice that this variance only depends on the variance of $Y$. The variance is constant throughout each vertical strip given the bivariate normal setting.
+
+### So, what?
+We now have information about how to predict $E(Y|X)$ based on the bivariate normal setting. We also know that even if our $X$ and $Y$ are not distributed as bivariate normal our $Y=m^*X+b^*$ still does fine work as the best linear estimator of $E(Y|X)$. How does this all work on a dataset?
+
+I ask my students this question that is related but not completely on-topic: "What do we do whenever we see hypotheses?" Their answer? "Check assumptions!" It was definitely unclear to me in the past what these assumptions were based upon, but now we see the bivariate normal case, it makes sense why we will need to assume certain things when applying theory to make models for our data.
+
+We'll see these assumptions soon.
+
+## Algebraically
+I am now incorporating information from my mathematical statistics class that I took with Professors <a href="http://www.stat.ucdavis.edu/~debashis/">Debashis Paul</a>, <a href="http://www.stat.ucdavis.edu/~wang/">Jane-Ling Wang</a>, <a href="http://www.stat.ucdavis.edu/~mueller/">Hans-Georg Mueller</a>, and <a href="http://www.stat.ucdavis.edu/~burman/">Prabir Burman</a>. I could easily spend hours talking about the incredible education and experience I had with <a href="https://statistics.ucdavis.edu/">UC Davis Stats</a>.
+
+In the previous section, we spent a whole lot of time building up theory on how to minimize MSE which resulted in a least squares prediction model of $Y=m^*X+b^*$. This section builds completely off intuition from the previous one.
+
+### Deriving the model
+Let's start off with a straight line: $y=mx+b$. (I never outgrew the slope-intercept form from 7th grade.) Let's rewrite replace our $m$ and $b$ with Greek letters to form $y=\beta_0+\beta_1x$. This is the formula for an straight line, but using the $\beta_i$ notation is the standard way to present coefficients for linear regression. The following proof is provided by Morris and DeGroot (2011).
+
+The sum of squared vertical distances from $y_i$ to $\hat{y}_i$ for $n$ observations is written as
+
+$$
+Q = \sum_{i=1}^{n} [y_i-(\beta_0+\beta_1x_i)]^2.
+$$
+
+Our goal is to minimize $Q$, so we have to take partial derivatives with respect to the betas.
+
+$$
+\begin{align}
+  \frac{\partial Q}{\partial \beta_0} 
+  &= -2 \sum_{i=1}^{n} [y_i-(\beta_0+\beta_1x_i)]
+  \\
+  \frac{\partial Q}{\partial \beta_1}
+  &= -2 \sum_{i=1}^{n} x_i[y_i-(\beta_0+\beta_1x_i)]
+\end{align}
+$$
+
+We set these two derivatives to 0 and simplify.
+
+$$
+\begin{align}
+  0 
+  &= -2 \sum_{i=1}^{n} [y_i-(\beta_0+\beta_1x_i)]
+  \\
+  &= \sum_{i=1}^{n} [y_i-(\beta_0+\beta_1x_i)]
+  \\
+  &= \sum_{i=1}^{n}y_i - \sum_{i=1}^{n}\beta_0 - \sum_{i=1}^{n} \beta_1x_i
+  \\
+  &= \sum_{i=1}^{n}y_i - n\beta_0 - \beta_1\sum_{i=1}^{n} x_i
+\end{align}
+$$
+
+$$
+\begin{align}
+  0 
+  &= -2 \sum_{i=1}^{n} x_i[y_i-(\beta_0+\beta_1x_i)]
+  \\
+  &= \sum_{i=1}^{n} x_i[y_i-(\beta_0+\beta_1x_i)]
+  \\
+  &= \sum_{i=1}^{n}x_iy_i - \sum_{i=1}^{n} xi\beta_0 - \sum_{i=1}^{n} \beta_1x_i^2
+  \\
+  &= \sum_{i=1}^{n}x_iy_i - \beta_0\sum_{i=1}^{n} xi - \beta_1\sum_{i=1}^{n} x_i^2
+\end{align}
+$$
+
+We use the above results to produce what are called the **normal equations** for $\beta_0$ and $\beta_1$.
+
+$$
+\begin{align}
+  \beta_0n + \beta_1 \sum_{i=1}^{n} x_i 
+  &= \sum_{i=1}^{n} y_i
+  \\
+  \beta_0\sum_{i=1}^{n}x_i + \beta_1 \sum_{i=1}^{n}x_i^2
+  &= \sum_{i=1}^{n} x_iy_i
+\end{align}
+$$
+
+From these equations, we are able to find the least squares coefficients for $\beta_0$ and $\beta_1$ that minimize MSE. The coefficients are estimated with
+
+$$
+\begin{align}
+  \hat{\beta}_1 
+  &= \frac{\sum_{i=1}^{n} (y_i-\bar{y})(x_i-\bar{x})}{\sum_{i=1}^{n} (x_i-\bar{x})^2}
+  \\
+  \hat{\beta}_0
+  &= \bar{y}-\hat{\beta}_1\bar{x}
+\end{align}
+$$
+
+which clearly show similarity to the coefficients we derived earlier
+
+$$
+\begin{align}
+  m^* 
+  &= \frac{\text{Cov}(X,Y)}{\text{Var}(X)}
+  \\
+  b^*
+  &= E[Y] - m^*E[X].
+\end{align}
+$$
+
+Notice we have used plug-in estimators to estimate the values for $m^*$ and $b^*$.
+
+### Assumptions
+Previously, we had that for our $Y=m^*X+b^*$ to be the best among all possible prediction models, $X$ and $Y$ had to be bivariate normal. In order to apply this to empirical data, we are going to make the following simplifying assumptions.
+
+1. Random variables $X$ and $Y$ have a linear relationship.  
+2. The variance $\text{Var}(Y|X=x)=\sigma^2$ is constant and does not depend on $x$.  
+
+### The model
+Our regression model is
+
+$$
+Y_i = \beta_0 + \beta_1X_i + \epsilon_i
+$$
+
+where $\epsilon_i$, the errors/residuals, are distributed $N(0,\sigma^2)$ and are constant throughout the model. We have found our fitted simple linear regression line to be
+
+$$
+y_i = \hat{\beta}_0 + \hat{\beta}_1x_i.
+$$
+
+given the coefficients above. Our unbiased estimate of $\sigma^2$ is
+
+$$
+\hat{\sigma}^2 = \frac{1}{n-2} \sum_{i=1}^{n} \hat{\epsilon}_i
+$$
+
+where $\hat{\epsilon}_i = y_i - (\hat{\beta_0}+\hat{\beta_1}x_i)$.
+
+## Properties of the least squares estimator
+1. Under the assumption $Y_i|X_i \sim N(\mu_i, \sigma^2)$, the least squares estimator of $(\beta_0, \beta_1)$ is also the maximum likelihood estimator.  
+
+2. The expectation of the estimate is the true parameter, i.e. $E(\hat{\beta}_i|\textbf{X})=\beta_i \, \forall \, i$  
+
+3. Given $s^2_X=\frac{1}{n} \sum_{i=1}^{n}(X_i-\bar{X}_n)^2$, we have
+
+$$
+\text{Var}(\hat{\beta}_i|\textbf{X}) = \frac{\sigma^2}{ns^2_X}
+\begin{bmatrix} 
+\frac{1}{n} \sum_{i=1}^{n} X_i^2 & -\bar{X}_n \\
+-\bar{X}_n & 1 
+\end{bmatrix}.
+$$
+
+4. Estimators are consistent, i.e. $\hat{\beta_i} \overset{P}\to \beta_i \, \forall \, i$  
+
+5. They have asymptotic normality, i.e. $\frac{\hat{\beta}_i - \beta_i}{\hat{SE}(\hat{\beta}_i)} \overset{D}\to N(0,1) \, \forall \, i$
+
+With the above information, we can conduct inference on hypotheses like $H_0: \beta_1=0$ making use of our sample data and a t-test with $n-2$ degrees of freedom. Of course, if we had the true (non-estimated) standard errors, then we could use a Wald test.
+
+
+# Computation
+It was probably really unfun of me to not mention Pokemon in the previous section. Well, it's time to bring back that fun. Here's a preview of that data again, since scrolling back would be a pain.
+
+```{r}
+pokemon_sub %>% select(Name, Type1, Type2, Attack, Sp.Atk) %>% head
+```
+
+## More about the data
+On the first day of one of my classes this semester, current professor of mine <a href="https://vanderlaan-lab.org/">Professor Mark van der Laan</a> etched into my head that the first thing I should be able to do as a statistician is understand my **data generating process (DGP)**.
+
+The data I have selected are "Pokedex data" on Pokemon. These Pokemon stats are (1) manmade but also (2) have no measurement error (unless someone fudged with the data before I got it!). I remain unaware of how The Pokemon Company, its engineers, and its designers have decided how attack and special attack should vary with one another. From what I understand, it is a well-developed system.
+
+Pokemon have different "types" rendering their moves in battle against any other given pokemon more or less effective in lowering hitpoints. To be exact, in this dataset there are `r pokemon %>% pull(Type1) %>% unique %>% length` different Pokemon types which are as follows.
+
+```{r}
+pokemon %>% pull(Type1) %>% unique
+```
+
+For my regression model, I have subset my data to only include the three primary Pokemon types: grass, water, and fire. I had no other reason in doing this aside from limiting the number of observations in my dataset. Therefore, the line that we are fitting will only be generalizable to Pokemon that have these types.
+
+Furthermore, I have subset my data to only cinlude pokemon from generations 1 through 5. I did this in order to leave some pokemon out for prediction. I have reason to believe that the DGP that yielded attack and special attack stats from pokemon from generations 1 through 5 will also generalize to generation 6. (There's no way that the creators would just suddenly create insanely different pokemon when eventually we are able to transfer pokemon from one generational game to another.)
+
+Let me remind you of our scatterplot from earlier.
+
+```{r ggplot-scatter-b}
+ggplot(pokemon_sub, aes(x=Attack, y=Sp.Atk, col=Type1)) + 
+  geom_point(alpha=0.5) + 
+  xlab("attack") +
+  ylab("special attack") +
+  ggtitle("Attack v. Special Attack in Water, Fire, and Grass Pokemon") +
+  theme_minimal()
+```
+
+This time, I've colored in our observations based on which major type a Pokemon is in my dataset. We see that there is a pretty nice scatter, and leading me to believe that I can model these pokemon types together.
+
+We should also be interested in looking at the correlation $r$ of these data.
+
+```{r}
+cor(pokemon_sub$Attack, pokemon_sub$Sp.Atk)
+```
+
+Since $r=0.553$ and correlation is a number anywhere between -1 and 1, we can conclude a positive association between attack and special attack. However, this is not a very high value of correlation, so we will proceed with our computation with caution.
+
+## Fitting model using base R
+While all of the calculations above made it seem like linear regression is super rigorous to calculate, `R` makes it very convenient. All you have to do is use `lm(Y~X, data=some_matrix)`, then using `summary()` to examine the model fit.
+
+```{r, echo=FALSE}
+pokemon_model <- lm(Sp.Atk ~ Attack, data=pokemon_sub)
+summary(pokemon_model)
+```
+
+The line of best fit ended up being $y=0.3996x+41.2513$. We can plop this right on top of our data using `plot()`.
+
+```{r}
+plot(x=pokemon_sub$Attack, y=pokemon_sub$Sp.Atk, 
+     pch=19, 
+     col=alpha("black", 0.4),
+     xlab="attack",
+     ylab="special attack",
+     main="Attack v. Special Attack in Water, Fire, and Grass Pokemon")
+abline(reg=pokemon_model, lwd=4, col=alpha("red3", 0.7))
+```
+
+This line doesn't seem to follow the pattern I expected it would. If you look at the 1:1 line, you see data cluster in that area.
+
+```{r}
+plot(x=pokemon_sub$Attack, y=pokemon_sub$Sp.Atk, 
+     pch=19, 
+     col=alpha("black", 0.4),
+     xlab="attack",
+     ylab="special attack",
+     main="Attack v. Special Attack in Water, Fire, and Grass Pokemon")
+abline(a=0, b=1, lwd=4, col=alpha("red3", 0.7))
+```
+
+However unexpected, this is unsurprising because there are a number of data points below the identity line that are **influential points** which pull the line of best fit lower and toward them. Earlier, we mentioned that we are working under the assumption that the variance for each $X=x$ is uniformly based on $Y$, but this assumption is quite obviously not met in practice. For observations with higher attack stats, the variance of special attack is much wider than observations with lower attack stats.
+
+Given our assumptions hold true, for Pokemon with attack stats as small as `r min(pokemon$Attack)` to as large as `r max(pokemon$Attack)`, we can predict their special attack stat. It is important that we do not **extrapolate**, which means to predict outside of the range we modelled our line with.
+
+## Using `dplyr` and `ggplot2`
+When implementing regression using `tidyverse` functions, the first line of `pokemon_model <- lm(Sp.Atk ~ Attack, data=pokemon_sub)` would remain the same. Instead of using `summary()`, we will use functions from `library(broom)`.
+
+Using `tidy()`, we can see coefficient information. This is the same information from `summary()`, but its arguably more visually appealing.
+
+```{r}
+tidy(pokemon_model)
+```
+
+And using `glance()`, we can see information about model fit. Earlier, we calculated the correlation between $X$ and $Y$ to be $\approx 0.553$. The following value of $R^2$ is $0.305$ and can be interpretated as the amount of variation in $Y$ that can be explained by $X$.
+
+```{r}
+glance(pokemon_model)
+```
+
+Notably, the value of correlation squared is the $R^2$ value.
+
+```{r}
+correlation <- cor(pokemon_sub$Attack, pokemon_sub$Sp.Atk)
+c(correlation=correlation, correlation_squared=correlation^2)
+```
+
+Instead of using `plot()`, we can using `ggplot()` and display our line of best fit on our scatterplot. In the following, I could have used either `geom_abline()` or `geom_smooth(method="lm")`, but I just used the latter for no good reason.
+
+```{r ggplot-scatter-lm}
+ggplot(pokemon_sub, aes(x=Attack, y=Sp.Atk)) + 
+  geom_point(alpha=0.5) + 
+  geom_smooth(method="lm", se=FALSE, col="red3", lwd=1.5, alpha=0.7) +
+  xlab("attack") +
+  ylab("special attack") +
+  ggtitle("Attack v. Special Attack in Water, Fire, and Grass Pokemon") +
+  theme_minimal()
+```
+
+## Predicting the 6th generation
+As I mentioned earlier, I subset my data to only include fire, grass, and water pokemon from the first five generations of Pokemon. I will now use my line of best fit to predict special attack stats for generation 6 pokemon.
+
+```{r}
+gen_6 <- pokemon %>% filter(Type1 %in% c("Water", "Fire", "Grass"))
+gen_6 <- gen_6 %>% filter(Generation==6)
+gen_6 %>% select(Name, Type1, Type2, Attack, Sp.Atk) %>% head
+```
+
+Earlier, I mentioned that we could only make predictions for pokemon with attack stats of between `r min(pokemon$Attack)` and `r max(pokemon$Attack)`. We can check this.
+
+```{r}
+c(gen6_min_attack=min(gen_6$Attack), gen6_max_attack=max(gen_6$Sp.Atk))
+```
+
+Because we have the above results, we can continue to prediction.
+
+
+In order to make predictions, you use the `predict()` function. I used: `predict(pokemon_model, newdata=gen_6 %>% select(Attack))` which plugs in our $x$ for us and does the plug-and-chug math. For Chepsin, our prediction is $y=0.5787261(61)+34.6482218$.
+
+```{r}
+gen_6_predictions <- predict(pokemon_model, newdata=gen_6 %>% select(Attack))
+```
+
+Below, I have presented the errors.
+
+```{r}
+gen_6_predictions <- cbind(gen_6 %>% select(Name, Type1, Type2, Attack, Sp.Atk), Sp.Atk.Pred=gen_6_predictions)
+gen_6_predictions <- gen_6_predictions %>% mutate(Error=Sp.Atk.Pred-Sp.Atk)
+gen_6_predictions
+```
+
+On average, our prediction of special attack was off by `r round(sqrt(mean(gen_6_predictions$Error^2)), 2)` points. That's pretty off. We can see why by looking at the following plot.
+
+```{r}
+ggplot(gen_6_predictions, aes(x=Attack, y=Sp.Atk)) + 
+  geom_point(alpha=0.5, aes(col=Type1)) + 
+  geom_abline(slope=0.5787261, intercept=34.6482218, col="red3", lwd=1.5, alpha=0.7) +
+  xlab("attack") +
+  ylab("special attack") +
+  ggtitle("Attack v. Special Attack in Water, Fire, and Grass Pokemon") +
+  theme_minimal()
+```
+
+# Common Errors
+Linear regression is so popular, but it so incredibly misused. Did you notice how difficult it was to derive the coefficients and theory but how easy software makes the implementation? This becomes a terrible problem.
+
+Many courses and many disciplines teach regression as if assumptions don't matter. But they do! In order to interpret a linear model and to at all find confidence (not statistical confidence) that your regression model will do any good, you need to assess your assumptions. This requires making plots and some deep thought about whether assumptions are even practical.
+
+Correlation between variables has also led to the belief that correlation implies causation. While causation can *definitely* be visualized by a graph that has correlated variables, correlation is not enough to say that a covariate implies an outcome.
+
+Extrapolation, using your fitted line to predict for values outside of the line, is very bad! And I've seen many students do this, so I don't think it's nuts of me to believe that they've learned it from someone or there are others who have not learned this but still do it.
+
+Lastly, generalization. I spoke about the data generating process that gave rise to my data and that only for other observations that have been sampled from that same process will I be able to predict special attack for. To be clear, that means I cannot Yu-Gi-Oh or Digimon stats to predict special attack! Pokemon only!
+
+
+# Concluding remarks
+I'm pretty glad I did this synthesis. Hope you liked it. If you have questions/concerns/corrections, do let me know. I want to make sure that I'm not part of the regression misuse and abuse clan.
+
+
+# References
+
+Adhikari, A., & Pitman, J. (20xx). "Chapter 22: Prediction". Probability for Data Science. Creative Commons. [<a href="http://prob140.org/textbook/chapters/Chapter_22/00_Prediction">URL</a>]
+
+Adhikari, A., & Pitman, J. (20xx). "Chapter 24: Simple Linear Regression". Probability for Data Science. Creative Commons. [<a href="http://prob140.org/textbook/chapters/Chapter_24/00_Simple_Linear_Regression">URL</a>]
+
+DeGroot, M. H., & Schervish, M. J. (2012). "Chapter 11: Linear Statistical Models". Probability and statistics. Pearson Education.
+
+Neter, J., Kutner, M. H., Nachtsheim, C. J., & Wasserman, W. (1996). "Chapter 2: Inferences in Regression and Correlation Analysis". Applied linear statistical models (Vol. 4, p. 318). Chicago: Irwin.
+
+Sauer, S. (2016). Shading multiple areas under normal curve. [<a href="https://sebastiansauer.github.io/shade_Normal_curve/">URL</a>]
+
+Steorts, R. (2015). Visualizing the Multivariate Normal, Lecture 9. [<a href="http://www2.stat.duke.edu/~rcs46/lectures_2015/02-multivar2/02-multivar2.pdf">URL</a>]
+
+Wasserman, L. (2013). "Chapter 13: Linear and Logistic Regression". All of Statistics. Springer Science & Business Media.
+
+
+
+# Data Source
+I downloaded the Pokedex data from <a href="https://data.world/data-society/pokemon-with-stats">data.world</a> but the original source is <a href="https://www.kaggle.com/abcsds/pokemon">Kaggle</a>.
+
