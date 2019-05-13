@@ -1,12 +1,16 @@
 ---
 title: 'Kernel Density Estimators'
-date: May 8, 2019
+date: 8 May 2019
 author: Edie Espejo
 output:
   html_notebook:
     code_folding: hide
-  html_document:
-    df_print: paged
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+    number_sections: true
 ---
 
 ```{r libraries, include=FALSE, message=FALSE, warning=FALSE}
@@ -19,7 +23,7 @@ library(gridExtra)
 
 Earlier, I did a blog on histogram estimators and how they asymptotically approximate a probability density. Histogram estimators look like step functions and are discontinuous which imply convergene to a smooth density may take some time compared to an probability density estimator that is already smooth. Kernel density estimators are smoother than histogram estimators, so let's study those!
 
-## Definitions
+# Definitions
 Let $X_1, X_2, ... X_n \sim f$ be our sample. Let a **kernel** $K$ be a smooth function that satisfies the following:
 
 - $K(x)>0$  
@@ -47,7 +51,7 @@ What we see here is that we need to specify a kernel $K$ and a bandwidth $h$. Th
 
 All of these shapes are affected by your choice of $h$. A larger bandwidth will allow more data points to be modeled by the kernel. A smaller one will only let points that are closeby to give weight, leading to KDE's that fit quite tightly to the observed data. The choice of $K$ to estimate a density is proven to be not as crucial as the choice of $h$.
 
-## Estimating a Density
+# Estimating a Density
 We're going to start using a dataset on Ames, Iowa housing prices. Let's see how these houses look on a histogram and boxplot.
 
 ```{r, echo=FALSE}
@@ -72,7 +76,7 @@ ggplot(ames, aes(y=SalePrice)) +
 
 What's obvious from these two plots is that we have a clear center near the median of the distribution, but a whole bunch of outliers.
 
-### By Theorem
+## By Theorem
 The best theoretical kernel density estimator will minimize error. The MISE for a KDE is found to be 
 
 $$
@@ -93,7 +97,7 @@ where
 
 When $h^*$ is the bandwidth, $R(f, \hat{f}_n) \approx \frac{c_4}{n^{4/5}}$ for some constant $c_4$ greater than 0. Kernel estimators converge at a rate of $n^{-4/5}$ which is faster than histogram estimators' convergence rate of $n^{-2/3}$. While all this is awesome, of course in practice, we don't know what the true $f(x)$ is. In fact, we're just en route to estimating $f(x)$.
 
-### By Estimation
+## By Estimation
 We can estimate risk with
 
 $$
@@ -114,7 +118,7 @@ $$
 
 That is, the smallest theoretical bandwidth $h$ and the cross-validated bandwidth $h_n$ will perform asymptotically well in place of each other.
 
-### Back to Ames, Iowa
+## Back to Ames, Iowa
 Our next goal is to estimate the density of Ames, Iowa home prices from 2006-2010 using kernel density estimation. We will be using the package `ks` as recommended by Deng and Wickham.
 
 ```{r}
@@ -156,7 +160,7 @@ Also, though `ks` is already used by many, I'd like to take the time to praise h
 ## Questions for later
 I don't know what $y$ and $z$ are in the risk estimation formula.
 
-## References
+# References
 
 Conlin, M. 
 Kernel Density Estimation [<a href="https://mathisonian.github.io/kde/">URL</a>].
@@ -171,5 +175,5 @@ Wasserman, L. (2013). All of Statistics. Springer Science & Business Media. [<a 
 
 
 
-## Data Source
+# Data Source
 The Ames Housing Dataset. Info is available <a href="http://jse.amstat.org/v19n3/decock.pdf">here</a> and download is available through <a href="https://www.kaggle.com/c/house-prices-advanced-regression-techniques">Kaggle</a>.
