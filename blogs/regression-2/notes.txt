@@ -1,0 +1,77 @@
+We have $\epsilon_i \sim N(0,\sigma^2)$. We can get from that, $E(\epsilon_i)=0$ and $\text{Var}(\epsilon_i)=\sigma^2$. Then, $E(\epsilon_i^2) = \text{Var}(\epsilon_i) + E(\epsilon_i)^2$. Thus, $E(\epsilon_i^2) = \text{Var}(\epsilon_i)$.
+
+**Using variance definition**  
+I'm sure we can go from this route, but I'll attempt.
+
+$$
+\begin{align}
+  \text{Var}(\hat{\theta})
+  &= \text{Var}\big[ \frac{(x_2+2x_3)}{2n} \big]
+  \\
+  &= \frac{1}{4n^2}\big[\text{Var}(x_2) + 4\text{Var}(x_3)\big]
+  \\
+  &= \frac{1}{4n^2} \big[np_2(1-p_2) + 4np_3(1-p_3)\big]
+  \\
+  &= \frac{n}{4n^2} \big[p_2(1-p_2) + 4p_3(1-p_3)\big]
+  \\
+  &= \frac{1}{4n} \big[p_2(1-p_2) + 4p_3(1-p_3)\big]
+  \\
+  &= \frac{1}{4n} \big[2\theta(1-\theta)(1-2\theta(1-\theta)) + 4\theta^2(1-\theta^2)\big]
+  \\
+  &= \frac{1}{4n} \big[(2\theta-2\theta^2)(1-2\theta+2\theta^2) + 4(\theta^2-\theta^4)\big]
+  \\
+  &= \frac{1}{4n} \big[(2\theta - 4\theta^2 + 4\theta^3 - 2\theta^2 +4\theta^3-4\theta^4) + 4(\theta^2-\theta^4)\big]
+  \\
+  &= \frac{1}{4n} \big[-4\theta^4 -4\theta^4 +4\theta^3+4\theta^3 -4\theta^2 -2\theta^2 + 4\theta^2 + 2\theta \big]
+  \\
+  &= \frac{1}{4n} \big[ -8\theta^4 + 8\theta^3 - 2\theta^2 + 2\theta \big]
+  \\
+  &= \frac{2}{4n}
+\end{align}
+$$
+
+
+
+
+The variance of each $Y_i$ is $\sigma^2$. Recall that the $\beta_i$ are fixed parameters and $X_i$ are fixed observations.
+
+$$
+\begin{align}
+  \text{Var}(Y_i) 
+  &= \text{Var}(\beta_0 + \beta_1X_i + \beta_2X_i^2 + \epsilon_i)
+  \\
+  &= \text{Var}(\beta_0) + \text{Var}(\beta_1X_i) + \text{Var}(\beta_2X_i^2) + \text{Var}(\epsilon_i)
+  \\
+  &= 0 + 0 + 0 + \sigma^2
+  \\
+  &= \sigma^2
+\end{align}
+$$
+
+
+Because $\epsilon_i \overset{iid}\sim N(0,\sigma^2)$, 
+$$
+\mu = X\beta
+=
+\begin{bmatrix}
+1 & X_{11} & X_{12}
+\\
+1 & X_{n1} & X_{n2}
+\end{bmatrix}
+\begin{bmatrix}
+\hat{\beta}_0
+\\
+\hat{\beta}_1
+\\
+\hat{\beta}_2
+\end{bmatrix}
+$$
+
+Let's think. The sampling distribution os $\beta_1$ is $\hat{\beta}_1 \sim N\big(\beta_1, \sigma^2\frac{1}{\sum_{i}(X_i-\bar{X})^2}\big)$. Since we don't have $\sigma^2$ in practice, we'll have to use a plug-in estimator in its place, particularly $s^2$.
+
+
+http://www.robots.ox.ac.uk/~fwood/teaching/W4315_Fall2011/Lectures/lecture_4/lecture4.pdf
+
+
+
+[^1]: I could not find a good source as to why this is. The text (and my professors have) mentioned that it's because we are estimating two parameters, $\beta_0$ and $\beta_1$. However, in our case, we're totally estimating 3 parameters, the two aforementioned and $\beta_2$.

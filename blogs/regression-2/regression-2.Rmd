@@ -1,0 +1,39 @@
+---
+title: "Multiple Regression"
+output:
+  html_notebook:
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+    number_sections: true
+---
+
+# Has mistakes
+Consider the simple linear regression model
+
+$$
+Y_i = \beta_0 + \beta_1X_i + \beta_2X_i^2 + \epsilon_i
+$$
+
+for $i=1,...,n$ with $\epsilon_i,...,\epsilon_n \overset{iid}\sim N(0, \sigma^2)$.
+
+## Unbiased estimator for $\sigma^2$
+The standard form for the unbiased estimator of $\sigma^2$ for a simple linear regression model with $p$ parameters is
+
+$$
+\hat{\sigma}^2 = \frac{1}{n-p} \sum_{i=1}^{n} (Y_i-\hat{Y}_i).
+$$
+
+where $Y_i$ and $\hat{Y}_i$ are vectors of the same size. The unbiased estimator of $\sigma^2$ is 
+
+$$
+\begin{align}
+  \hat{\sigma}^2 
+  &= \frac{1}{n-2} \sum_{i=1}^{n} (Y_i-\hat{Y}_i)
+  \\
+  &= \frac{1}{n-2} \sum_{i=1}^{n} (Y_i - X\hat{\beta}).
+\end{align}
+$$
