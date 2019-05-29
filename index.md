@@ -1,6 +1,6 @@
 ![site-banner](images/banners_github.003.jpg)
 
-<a href="blog.md">Blog</a>
+<a href="blog">Blog</a>
 
 
 # Mabuhay!
