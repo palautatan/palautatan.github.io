@@ -50,10 +50,9 @@ ggplot(nasdaq_long) +
   scale_colour_brewer(palette="Reds")
 ```
 
-If you're partial to watching the news on television, the NASDAQ stock market index is a natural sight. The y-axis in the plot above represents a "snapshot" stock market performance and the x-axis is time. The data presented in the plot are a "time series" because they are repeated measurements taken over a time period. The data above were downloaded from the Nasdaq website and cover a month period from the end of April to the end of May. Over this period, the index peaked on the 24th of May.
+<img src="images/us-trending.png" width=200 alt="US trends on Twitter." align="right">
 
-<p>
-<img src="images/us-trending.png" width=220 alt="US trends on Twitter." align="right">
+If you're partial to watching the news on television, the NASDAQ stock market index is a natural sight. The y-axis in the plot above represents a "snapshot" stock market performance and the x-axis is time. The data presented in the plot are a "time series" because they are repeated measurements taken over a time period. The data above were downloaded from the Nasdaq website and cover a month period from the end of April to the end of May. Over this period, the index peaked on the 24th of May.
 
 If you prefer personalizing your periodicals on Twitter over watching the news, you are familiar with the concept of "trending". While no time series plots are visible to Twitter users, data scientists use time series trends to determine which hashtags are the most popular according to your account preferences. 
 
@@ -62,7 +61,6 @@ By default, Twitter accounts show personalized trends on the homepage. That is, 
 The figure to the right is a screenshot of US trends from the 28th of May. The US Twitter community celebrated the life of Harambe three years after his passing and the #AnimalKingdom. In fourth place after National Hamburger Day, Justice Clarence Thomas was trending for his "bizarre attack on birth control" associating abortions with racial eugenics.
 
 Reflecting Twitter's fast-paced stream, the countrywide trends changed completely by the next day.
-</p>
 
 # Why time series?
 Stock market averages are tracked and predicted by time series analysis to keep investors well-informed. Twitter users keep up-to-date with their cyberworld using trending hashtags detected by time series algorithms. Population figures, monthly airline passengers, and temperature can also be represented by time series data to equip the city for an influx of new citizens, to use airline resources efficiently, and to reveal effects of global warming.
