@@ -1,4 +1,5 @@
 # Projects
+Here are some of my projects and work samples. My favorite statistical applications are business, basketball, and biotech.
 
 ## Personal Projects
 * <a href="personal/project-hal.html">An analysis of Project HAL data</a> (Work in progress...)
