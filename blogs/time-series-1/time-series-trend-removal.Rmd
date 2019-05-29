@@ -1,0 +1,129 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r engagement-ts-plot-post, warning=FALSE, message=FALSE}
+min <- as.Date("2012-01-01")
+max <- max(engagement$date)
+engagement_sub <- engagement %>% filter(date>min) %>% filter(date<max)
+
+ggplot(engagement_sub, aes(x=date, y=search)) + 
+  geom_point(size=0.8, col="lightblue") + 
+  geom_line(alpha=0.7) +
+  scale_x_date(date_breaks="1 year", labels=date_format("%Y-%m")) +
+  ylab("google interest") +
+  xlab("") +
+  ggtitle("Engagement Ring Interest Starting 2012") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90)) +
+  geom_abline(slope=-0.0002097, intercept=50.3715576)
+
+
+rem_trend <- engagement_sub$search - fuck$fitted.values
+rem_trend <- cbind(engagement_sub, rem_trend)
+fucking_shit <- melt(rem_trend, id.vars="date")
+
+ggplot(fucking_shit, aes(x=date, y=value, color=variable, group=variable)) + 
+  geom_point(size=0.8, col="lightblue") + 
+  geom_line(alpha=0.7) +
+  scale_x_date(date_breaks="1 year", labels=date_format("%Y-%m")) +
+  ylab("google interest") +
+  xlab("") +
+  ggtitle("Engagement Ring Interest Starting 2012") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90)) +
+  geom_abline(slope=-0.0002097, intercept=50.3715576)
+
+# (Intercept)  as.numeric(date)  
+#       50.3715576        -0.0002097 
+```
+
+
+
+
+
+
+```{r}
+fuck <- lm(search~as.numeric(date), data=engagement_sub)
+plot(engagement_sub)
+
+```
+
+
+```{r}
+d <- 25
+q <- (d-1)/2
+# q <- d/2
+```
+
+
+```{r moving-average}
+library(TTR)
+smooth <- SMA(engagement_sub %>% pull(search), n=q)
+smooth <- data.frame(ma=smooth)
+engagement_sub <- cbind(engagement_sub, smooth)
+```
+ 
+```{r engagement-ma-plot}
+ggplot(engagement_sub[complete.cases(engagement_sub),], aes(x=date, y=ma)) + 
+  geom_point(size=0.8, col="lightblue") + 
+  geom_line(alpha=0.7) +
+  scale_x_date(date_breaks="1 year", labels=date_format("%Y-%m")) +
+  ylab("google interest") +
+  xlab("") +
+  ggtitle("MA Plot of Engagement Ring Interest") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90))
+``` 
+
+```{r}
+library(astsa)
+weights <- c(0.5, 1, 1, 1, 0.5)
+weights <- weights/sum(weights)
+moving_average <- stats::filter(engagement_sub %>% pull(search), sides=2, weights)
+fit_lowess     <- lowess(engagement_sub %>% pull(search))
+
+moving_average <- as.numeric(moving_average)
+
+# engagement_sub <- engagement_sub[,-3]
+
+test <- cbind(engagement_sub, moving_average, lowess=fit_lowess[[2]])
+test
+
+library(dplyr)
+rawr <- data.frame(date=engagement_sub %>% pull(date), log_search=log(engagement_sub %>% pull(search)))
+test <- merge(test, rawr, by="date")
+
+library(reshape2)
+test_melt <- reshape2::melt(test, id.vars="date")
+
+diff(log(engagement_sub %>% pull(search)))
+
+diff(engagement_sub %>% pull(search))
+?diff
+```
+
+```{r}
+ggplot(test, aes(x=date, y=log_sear)) + 
+  geom_point(size=0.8) + 
+  geom_line(alpha=0.7) +
+  scale_x_date(date_breaks="1 year", labels=date_format("%Y-%m")) +
+  ylab("google interest") +
+  xlab("") +
+  ggtitle("MA Plot of Engagement Ring Interest") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r test-plots}
+ggplot(test_melt, aes(x=date, y=value, group=variable, color=variable)) + 
+  geom_point(size=0.8) + 
+  geom_line(alpha=0.7) +
+  scale_x_date(date_breaks="1 year", labels=date_format("%Y-%m")) +
+  ylab("google interest") +
+  xlab("") +
+  ggtitle("MA Plot of Engagement Ring Interest") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90))
+``` 

@@ -1,0 +1,376 @@
+---
+title: "Time Series"
+author: Edie Espejo
+date: 19 May 2019
+output:
+  html_notebook:
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+    number_sections: true
+---
+
+```{r libraries}
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(scales)
+```
+
+If you watch the news, then time series plots come up to display market projections and the weather forecast so that you can hopefully invest wisely and dress appropriately. I watched the news a lot as a child, and these plots were always my lemonade on a summer day. I drew a few (fake news) with my crayons and pretended I was a reporter. I'll admit that these dreams are still alive and well.
+
+I took time series analysis at <a href="https://statistics.ucdavis.edu/">UC Davis</a> with <a href="https://www.baylor.edu/statistics/index.php?id=941853">Dr. Joshua Patrick</a> in 2016, my junior year. Learning tools of this trade was (1) difficult but (2) rewarding. This blog will be somewhat of a tutorial, but moreso of a learning experience for me. I was not that intelligent my junior year so I never quite learned some fundamental theory about time series, and I hope that I am a tad more now making me able to do so.
+
+# Taking a look at time series
+On <a href="https://trends.google.com/trends/?geo=US">Google trends</a>, you can track the Google search interest of a query. I chose to explore the queries "engagement ring" and "christmas present". You can download a `csv` of the monthly time series associated with your query starting from dates in 2004 till the present. The number of searches is normalized by the maximum amount of searches during that time period, therefore the highest value is 100 and the lowest is 0. A downward trend in a time series plot shows that relative to other searches, our search query's popularity is decreasing.
+
+## Engagement rings
+The first query I researched was "engagement ring". I retrieved 185 observations of engagement ring search interest on Google.
+
+```{r read-engagement}
+engagement <- read_csv("../../data/engagement-ring.csv", col_names=TRUE)
+names(engagement) <- c("date", "search")
+
+engagement <- engagement %>% mutate(date=paste0(date, "-01"))
+engagement <- engagement %>% mutate(date=as.Date(date, "%Y-%m-%d"))
+
+# set.seed(107)
+# engagement %>% sample_n(6) %>% arrange(date)
+```
+
+The following is called a **time series plot**. Time series are typically displayed with time on the x-axis and a measurement on the y-axis.
+
+```{r engagement-ts-plot}
+min <- as.Date("2004-01-01")
+max <- max(engagement$date)
+
+ggplot(engagement, aes(x=date, y=search)) + 
+  geom_point(size=0.8, col="lightblue") + 
+  geom_line(alpha=0.7) +
+  scale_x_date(date_breaks="1 year", limits=c(min, max), labels=date_format("%Y-%m")) +
+  ylab("google interest") +
+  xlab("") +
+  ggtitle("Engagement Ring Interest Over Time") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+I am particularly opposed to the following representation, but if you believe times are looking up, I guess this one's for you.
+
+```{r engagement-ts-plot-2}
+min <- as.Date("2004-01-01")
+max <- max(engagement$date)
+
+ggplot(engagement, aes(y=date, x=search)) + 
+  geom_point(size=0.8, col="lightblue") + 
+  geom_line(alpha=0.7) +
+  scale_y_date(date_breaks="1 year", limits=c(min, max), labels=date_format("%Y-%m")) +
+  xlab("google interest") +
+  ylab("") +
+  ggtitle("Time Over Engagement Ring Interest") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+In the first plot, we see notable fluctuation of interest where engagement ring interest spikes and then goes down every so often (during a **period**).
+
+In both plots, we see more users having searched for "engagement ring" in recent years than in the past. In the last 5 years, online shopping has proliferated, which may be the cause.
+
+## Christmas presents
+Another query I was interested in was "christmas present" because I wanted to study a time series that would have a pretty defined period. That is, every 12 months we expect there to be a time when people are searching online for Christmas presents. 
+
+```{r read-christmas}
+christmas <- read_csv("../../data/christmas-present.csv", col_names=TRUE)
+names(christmas) <- c("date", "search")
+
+christmas <- christmas %>% mutate(date=paste0(date, "-01"))
+christmas <- christmas %>% mutate(date=as.Date(date, "%Y-%m-%d"))
+christmas <- christmas %>% mutate(search=as.numeric(gsub("<1", "0", search)))
+
+# set.seed(108)
+# christmas %>% sample_n(6) %>% arrange(date)
+```
+
+
+```{r christmas-ts-plot}
+min <- as.Date("2004-01-01")
+max <- max(christmas$date)
+
+ggplot(christmas, aes(x=date, y=search)) + 
+  geom_point(size=0.8, col="lightblue") + 
+  geom_line(alpha=0.7) +
+  scale_x_date(date_breaks="1 year", limits=c(min, max), labels=date_format("%Y-%m")) +
+  ylab("google interest") +
+  xlab("") +
+  ggtitle("Christmas Present Interest Over Time") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+Every year around December, the search for Christmas presents is on! While each year shows a very high Google interest around December, this does not mean that the absolute amount of searches were the same, but rather that per time period, the relative amount of searches were similar.
+
+
+What we are interested in now is to use **time series analysis** to describe and predict the relationship between our observations through time.
+
+# Some foundations
+
+**Time series** is a branch of statistics that deals with temporal data and is also the name those data. We analyze time series with time series. (That sounds rather unhelpful!) The data we visualized above on engagement ring and Christmas present interest are examples of time series plots.
+
+## Definitions
+A **time series** (*type of data*) can be denoted as $\{x_t\} = \{x_1, x_2, ..., x_t\}$ where the $x$'s are observations and the indices represent their temporal order. A **time series model** of these data is a joint distribution for the random variables $\{X_t\} = \{X_1, X_2, ..., X_t\}$ that would give rise to our data $\{x_t\}$. In notation, we can write this **joint distribution function**
+
+$$
+F_{t=\{1,2,...,n\}}(c_1, c_2, ..., c_n) = P(x_1 \leq c_1, x_2 \leq c_2, ..., x_n \leq c_n)
+$$
+
+where the first $n$ values are less than a collection of $n$ constants. The above is not used frequently because the normality assumption paired along with it is too strong. Instead of using the joint distribution function, we tend to use **first** (expected values) **and second-order moments** (expected products) to specify our model. Studying time series through "second-order spectacles" is justified through proof. 
+
+The **mean function** of $\{X_t\}$ is
+
+$$
+\mu_x(t)=E(X_t) = \int x f_t(x) dx.
+$$
+
+The **covariance function** of $\{X_t\}$, which measures the linear dependence between two distinct observations on the same time series, is
+
+$$
+\gamma_X(r,s)=\text{Cov}(X_r, X_s) = E[X_r-\mu_X(r)][X_S-\mu_X(s)].
+$$
+
+When $X_r=X_s$, the above is reduced to the variance. The **autocorrelation function** of $\{X_t\}$ provides us with a conveniently interpretable measure of association between -1 and 1. It is as follows [^1].
+
+$$
+\rho(r,s) = \frac{\gamma_X(r,s)}{\sqrt{\gamma_X(s,s)\gamma_X(r,r)}}
+$$
+
+The **strict stationarity** of a time series implies thatfor all integers $h$ (**lag**), $\{X_t\}$ and $\{X_{t+h}\}=\{X_{1+h}, X_{2+h},...,X_{n+h}\}$ have the same joint distribution. If $\{X_t\}$ is strictly stationary, then $\{X_t\}$ is also weakly stationary. **Weak stationarity** implies
+
+(1) $\mu_X(t)$ is independent of $t$ and  
+
+(2) $\gamma_X(t+h,t)$ is independent of $t$ for each $h$.
+
+Because stationarity is a requirement of the residuals of a time series for modeling, the independence of their means and covariances with given lag $h$ are independent of time essentially enable us to model time series.
+
+When we use plug-in estimators to approximate our parameters, we yield our (1) sample mean, (2) sample autocovariance function, and (3) sample autocorrelationfunction. In practice, this is what we will use.
+
+## The Classical decomposition model
+The **classical decomposition model** rewrites $\{X_t\}$ in three parts: trend ($m_t$), seasonality ($s_t$), and random noise ($Y_t$).
+
+$$
+X_t = m_t + s_t + Y_t
+$$
+
+To achieve stationarity, we can run through this checklist of questions.
+
+$\square$ Are there any distinct changes in mean or variance? Does the mean suddenly seem to change? Does variance of the measurement/observed values suddenly get larger or smaller?  
+
+$\square$ Is there a (linear) trend in my time series?  
+
+$\square$ Do I see a seasonal component (periodic fluctuation like a sine wave)?  
+
+$\square$ Do we have outliers?
+
+We should run this checklist down in order so that we can remove trend, seasonality, changes in mean/variance behavior, and outliers so that we can be left with a (weakly) stationary time series. Then, we can apply time series theory to that hopefully stationary time series which is called **noise**.
+
+We'll run through this all in `R`.
+
+
+# Engagement rings in `R`
+The **classical decomposition model**
+
+$$
+X_t = m_t + s_t + Y_t
+$$
+
+requires $E(Y_t)=0$, $s_{t+d}=s_t$ for a period of time $d$, and $\sum_{j=1}^{d} s_j=0$.
+
+## Narrowing my scope
+To be practical, I seriously need to narrow down my time period of interest. It is super clear that the internet shopping climate for engagement rings pre-2012 is much different than post-2012. I will focus my study starting in January 2012 for my model since it looks like pre-2012 and post-2012 could need two different models entirely.
+
+```{r engagement-ts-plot-pre, warning=FALSE, message=FALSE}
+max <- as.Date("2011-12-01")
+min <- min(engagement$date)
+
+ggplot(engagement, aes(x=date, y=search)) + 
+  geom_point(size=0.8, col="lightblue") + 
+  geom_line(alpha=0.7) +
+  scale_x_date(date_breaks="1 year", limits=c(min, max), labels=date_format("%Y-%m")) +
+  ylab("google interest") +
+  xlab("") +
+  ggtitle("Engagement Ring Interest Before 2012") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r engagement-ts-plot-post, warning=FALSE, message=FALSE}
+min <- as.Date("2012-01-01")
+max <- max(engagement$date)
+engagement_sub <- engagement %>% filter(date>min) %>% filter(date<max)
+
+ggplot(engagement_sub, aes(x=date, y=search)) + 
+  geom_point(size=0.8, col="lightblue") + 
+  geom_line(alpha=0.7) +
+  scale_x_date(date_breaks="1 year", labels=date_format("%Y-%m")) +
+  ylab("google interest") +
+  xlab("") +
+  ggtitle("Engagement Ring Interest Starting 2012") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+d <- 25
+q <- (d-1)/2
+# q <- d/2
+```
+
+Looking at the plot above, we can start thinking about what we believe our period $d$ is. Based on the second plot, we are going to assume d is `r d` data points (months).
+
+## Estimating and removing trend
+
+### Moving average filter
+*This is part of Method S1 in Brockwell/Davis.*[^2]
+
+In order to remove trend, we can use a **moving average (MA) filter**. With period $d=2q$, our moving average filter reassigns our observations to values using
+
+$$
+\hat{m}_t = (0.5x_{t-q}+x_{t-q+1}+...+x_{t+q-1}+0.5x_{t+q})/d
+$$
+
+for $q<t<n-q$. If our period is $d=2q+1$, then we should use a **simple moving average (SMA) filter** for $q+1 \leq t \leq n-q$ as follows.
+
+$$
+\hat{m}_t = (2q+1)^{-1}\sum_{j=-q}^{q} X_{t-j}
+$$
+
+For our engagement ring data, I am estimating the period to be about 8 months, so I'm setting $d=8$ and thus our $q=4$. We'll be using the filter using `SMA()` from `library(TTR)`.[^3] 
+
+```{r moving-average}
+library(TTR)
+smooth <- SMA(engagement_sub %>% pull(search), n=q)
+smooth <- data.frame(ma=smooth)
+engagement_sub <- cbind(engagement_sub, smooth)
+```
+ 
+```{r engagement-ma-plot}
+ggplot(engagement_sub[complete.cases(engagement_sub),], aes(x=date, y=ma)) + 
+  geom_point(size=0.8, col="lightblue") + 
+  geom_line(alpha=0.7) +
+  scale_x_date(date_breaks="1 year", labels=date_format("%Y-%m")) +
+  ylab("google interest") +
+  xlab("") +
+  ggtitle("MA Plot of Engagement Ring Interest") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90))
+``` 
+
+## Estimating and removing seasonality
+Recall we set $d=8$ months. Removing the seasonality component follows removing trend component. To do this, we calculate the average deviations $w_k$ using
+
+$$
+w_k = \{x_{k+jd} - \hat{m}_{k+jd}\}
+$$
+
+where $q < k+jd < n-q$. We use these values to produce
+
+$$
+\hat{s}_k = w_k - \frac{1}{d}\sum_{i=1}^{d}w_i.
+$$
+
+It follows that $\hat{s}=\hat{s}_{k-d}$ for $k>d$. The data we retrieve from calculating the following is called **deseasonalized data**.
+
+$$
+d_t = x_t - \hat{s}_t, \, \, t\in [1,n]
+$$
+
+Pop open the code box to see information on how I coded the above method.
+
+```{r}
+# * DEFINITIONS
+x <- engagement_sub$search
+mhat <- engagement_sub$ma
+n <- length(x)
+# d <- 8
+# q <- d/2
+
+# * PER INCREMENT IN PERIOD INTERVAL
+# * GET AVERAGE DEVIATION ACROSS ENTIRE TIME SERIES
+w <- c()
+for (k in 1:d) {
+  j   <- 1:round(n/d)
+  inx <- k + 8*j
+  
+  condition_1 <- inx > q
+  condition_2 <- inx <= n-q
+  
+  confirmed <- which(condition_1+condition_2==2)
+  
+  w_k <- sqrt(mean((x[inx[confirmed]] - mhat[inx[confirmed]])^2))
+  w <- c(w, w_k)
+}
+
+# * ESIMATE SEASONAL COMPONENT
+s <- c()
+for (k in 1:d) {
+  s_k <- w[k] - mean(w[1:k])
+  s <- c(s, s_k)
+}
+
+# * GET DESEASONALIZED DATA
+int_quo   <- n/length(s)
+remainder <- n %% length(s)
+
+s_t <- c(rep(s, times=int_quo), s[1:remainder])
+# length(s_t)
+d_t <- x - s_t
+d_t <- data.frame(deseason=d_t)
+engagement_sub <- cbind(engagement_sub, d_t)
+```
+
+```{r engagement-deseason-plot}
+ggplot(engagement_sub, aes(x=date, y=deseason)) + 
+  geom_point(size=0.8, col="lightblue") + 
+  geom_line(alpha=0.7) +
+  scale_x_date(date_breaks="1 year", labels=date_format("%Y-%m")) +
+  ylab("google interest") +
+  xlab("") +
+  ggtitle("Plot of Deseasoned Engagement Ring Interest") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90))
+``` 
+
+https://www.stat.pitt.edu/stoffer/tsa4/R_toot.htm
+
+https://stats.stackexchange.com/questions/291849/trend-and-seasonal-component-fitting-after-decomposition-of-the-time-series
+
+https://www.analyticsvidhya.com/blog/2015/12/complete-tutorial-time-series-modeling/
+
+http://r-statistics.co/Time-Series-Analysis-With-R.html
+
+## Checking for stationarity
+
+```{r}
+# adf.test()
+```
+
+# References
+Brockwell, P. J., Davis, R. A., & Fienberg, S. E. (1991). Time Series: Theory and Methods: Theory and Methods. Springer Science & Business Media.
+
+Google. Google Trends Training.
+[<a href="https://newsinitiative.withgoogle.com/training/lesson/4876819719258112?image=trends&tool=Google%20Trends">URL</a>]
+
+Shumway, R. H., & Stoffer, D. S. (2017). Time series analysis and its applications: with R examples. Springer.
+
+Time Series in R. [<a href="https://a-little-book-of-r-for-time-series.readthedocs.io/en/latest/src/timeseries.html">URL</a>]
+
+Moving Averages. [<a href="https://www.statisticshowto.datasciencecentral.com/moving-average/">URL</a>]
+
+# Footnotes
+[^1]:  For a stationary time series, all covariances should be the same, thus $\rho(h) = \frac{\gamma_x(h)}{\gamma_x(0)}$. $\gamma(h)$ stands for the covariance function with lag $h$, and $\gamma(0)$ simplifies to the variance.
+
+[^2]: This was discussed on p.31 in Brockwell/Davis.
+
+[^3]: Before I let $d$ be 8, I tried $d \in [1,12]$. With $d=8$, I was able to see the seasonality component most clearly.
