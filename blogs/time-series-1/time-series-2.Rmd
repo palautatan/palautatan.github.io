@@ -8,7 +8,7 @@ output:
     toc: true
     toc_float:
       collapsed: false
-      smooth_scroll: false
+      smooth_scroll: true
     toc_depth: 3
     number_sections: true
     fig_caption: yes
@@ -16,19 +16,22 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=FALSE)
+knitr::opts_chunk$set(echo=TRUE)
 ```
 
-```{r libraries}
+```{r libraries, warning=FALSE, message=FALSE}
 library(readr)
 library(ggplot2)
 library(dplyr)
 library(scales)
 library(reshape2)
+library(broom)
+library(TSA)
+library(forecast)
 ```
 
 ```{r data-load, include=FALSE}
-nasdaq <- read_csv("../../data/nasdaq-history.csv")
+nasdaq <- read_csv("../../data/nasdaq-history-2.csv")
 ```
 
 ```{r nasdaq-plot}
@@ -36,16 +39,15 @@ nasdaq <- nasdaq[-1,]
 nasdaq <- nasdaq %>% mutate(date=as.Date(nasdaq$date)) %>%
   dplyr::select(-volume)
 
-nasdaq <- nasdaq %>% mutate(average=(close+open+high+low)/4)
-
 nasdaq_long <- nasdaq %>% melt(id.vars="date")
+nasdaq <- nasdaq %>% mutate(average=(close+open+high+low)/4)
 
 ggplot(nasdaq_long) +
   geom_point(aes(x=date, y=value, group=variable, color=variable), alpha=0.7) +
   geom_segment(data=nasdaq, aes(x=date, xend=date, y=low, yend=high), alpha=0.3) + 
   geom_line(data=nasdaq, aes(x=date, y=average), lwd=1, col="darkred") +
   ylab("NASDAQ") +
-  ggtitle("Nasdaq Stock Market Index (28-APR-2019 TO 28-MAY-2019)") +
+  ggtitle("Nasdaq Stock Market Index (27-FEB-2019 TO 28-MAY-2019)") +
   theme_minimal() +
   scale_colour_brewer(palette="Reds")
 ```
@@ -74,24 +76,268 @@ A **time series** (*type of data*) can be denoted as $\{x_t\} = \{x_1, x_2, ...,
 
 A **time series model** of these data is a joint distribution for the random variables $\{X_t\} = \{X_1, X_2, ..., X_t\}$ that would give rise to our data $\{x_t\}$.
 
-The **classical decomposition model** rewrites the time series model $\{X_t\}$ in three components: trend ($m_t$), seasonality ($s_t$), and random noise ($Y_t$). We can write the model as an addition between the three components as follows:
+The **classical decomposition model** rewrites the time series model $\{X_t\}$ in three components: trend ($m_t$), seasonality ($s_t$), and random noise residuals ($Y_t$). We can write the model as an addition between the three components as follows:
 
 $$
 X_t = m_t + s_t + Y_t.
 $$
 
-The model assumes that the components have an additive relationship (a log transformation must be taken when the relationship is multiplicative). Our goal is to subtract trend and seasonality from our data and examine the noise component $Y_t$.
+The model assumes that the components have an additive relationship (a log transformation must be taken when the relationship is multiplicative). Our goal is to subtract trend and seasonality from our data and examine the noise component $Y_t = X_t - m_t - s_t$. Upon retrieval of our noise data $y_t$, we want to test whether it is **stationary** or not. Stationarity of a time series is a requirement of the residuals of a time series for modeling. 
+
+The **strict stationarity** of a time series implies that for all integers $h$ (**lag**), $\{X_t\}$ and $\{X_{t+h}\}=\{X_{1+h}, X_{2+h},...,X_{n+h}\}$ are distributed the same. **Weak stationarity** implies
+
+(1) $\mu_X(t)$ is independent of $t$ and  
+
+(2) $\gamma_X(t+h,t)$ is independent of $t$ for each $h$.
+
+The independence of means and covariances with given lag $h$ from time enable us (the modelers) to create mathematical descriptions and predict new values using time series.
 
 
 # How to properly time travel
+The classical decomposition model requires us to separate our trend and seasonality components from random noise. Recall the Nasdaq data from earlier. For a clean look, I only kept the average index per day in the following time series plot.
+
+```{r nasdaq-plot-2}
+ggplot(data=nasdaq, aes(x=date, y=average)) +
+  geom_line(lwd=1, col="pink3") +
+  geom_point(col="darkred") +
+  ylab("NASDAQ") +
+  ggtitle("Nasdaq Stock Market Index (27-FEB-2019 TO 28-MAY-2019)") +
+  theme_minimal() +
+  scale_colour_brewer(palette="Reds")
+```
+
+In statistics, we canonically learn to model trends with **linear regression**. That is, we take $y=mx+b$ and make a line of best fit. Using ordinary least squares, we can fit coefficients using `lm()` from base `R`. How to fit a sinusoidal (curvy/up and down pattern/sine-wave-like) seasonality component is less taught, but we can use **harmonic regression** to do this. Methods to separate trend/seasonality that are popular particular to and popular in time series are **differencing** and using **moving averages**.
+
+With so many methods available to estimate trend and seasonality, I was immediately confused on which route was most correct. My reflex was to ask one of my favorite advisors, <a href="https://statistics.ucdavis.edu/people/alexander-aue">Dr. Alex Aue</a>. Here's part of our email thread. He advised me that **there is no general rule on how to choose which method to remove trend and seasonality**. After estimating trend and seasonality using any method, an assessment of the random noise residuals will show which method works the best.
+
+The following is a rudimentary attempt to fit a time series model. I will not be heavily checking assumptions. The point of the next few subsections is to demonstrate simple examples.
+
+## The trend component
+One way to estimate the trend component is **linear regression**. In `R`, we can use the `lm()` function. See the block of code by clicking the "Code" button.
+
+```{r, echo=TRUE}
+nasdaq <- nasdaq %>% mutate(nm_date=as.numeric(date))
+straight <- lm(average ~ nm_date, data=nasdaq)
+parabola <- lm(average ~ nm_date + I(nm_date^2), data=nasdaq)
+cubic    <- lm(average ~ nm_date + I(nm_date^2) + I(nm_date^3), data=nasdaq)
+```
+
+The plot below shows all three trend lines atop the original Nasdaq data. 
+
+```{r nasdaq-plot-3}
+fitted_df   <- data.frame(cbind(straight=straight$fitted.values, parabola=parabola$fitted.values, cubic=cubic$fitted.values))
+nasdaq_fits <- cbind(nasdaq, fitted_df)
+nasdaq_fits <- nasdaq_fits %>% dplyr::select(date, nm_date, average, straight, parabola, cubic)
+
+ggplot(data=nasdaq_fits, aes(x=date, y=average)) +
+  geom_line(col="darkgrey") +
+  geom_point(col="grey2") +
+  geom_line(aes(x=date, y=straight), lwd=1, col="red4") +
+  geom_line(aes(x=date, y=parabola), alpha=0.3, lwd=2, col="darkred") +
+  geom_line(aes(x=date, y=cubic), col="red3") +
+  ylab("NASDAQ") +
+  ggtitle("Nasdaq Stock Market Index (27-FEB-2019 TO 28-MAY-2019)") +
+  theme_minimal() +
+  scale_colour_brewer(palette="Reds")
+```
+
+**The straight line is improper for these data.** I should not have fitted a straight line to these data in the first place, but some relentless souls will still do it and call it a day. To educate away from this doctrine, notice how the parabolic and cubic regression lines (plotted almost atop each other) fit the data's shape much better.
+
+**To model the trend of this time series, we will choose the parabola.** The following output show the coefficients and associated p-values.
+
+```{r}
+tidy(parabola)
+```
+
+The following is the formula for our trend line based off the previous output.
+
+$$
+m_t = 337666.6 -37.5t + 0.001t^2
+$$
+
+We can now perform the subtraction of the fitted points from our actual data.
+
+$$
+X_t - m_t = s_t + Y_t
+$$
+
+On a plot, our detrended data look like this.
+
+```{r nasdaq-plot-4}
+nasdaq_fits <- nasdaq_fits %>% 
+  select(date, nm_date, average, parabola) %>%
+  mutate(detrended=average-parabola)
+
+ggplot(data=nasdaq_fits, aes(x=date, y=detrended)) +
+  geom_line(lwd=1, col="pink3") +
+  geom_point(col="darkred") +
+  ylab("NASDAQ") +
+  ggtitle("Nasdaq Stock Market Index (27-FEB-2019 TO 28-MAY-2019)") +
+  theme_minimal() +
+  scale_colour_brewer(palette="Reds")
+```
+
+The data have been transformed to oscillate about the horizontal line about the data's mean ($\approx 0$).
+
+```{r boxplot}
+ggplot(data=nasdaq_fits, aes(y=detrended)) +
+  geom_boxplot(col="black", fill="pink3") +
+  ylab("NASDAQ") +
+  xlab("") +
+  ggtitle("Nasdaq Stock Market Index (27-FEB-2019 TO 28-MAY-2019)") +
+  theme_minimal()
+```
+
+Two outlier index measures took place at the start of May.
+
+## The seasonality component
+
+In order to fit the seasonality component, we will use `harmonic()` from `library(TSA)`. Using this library took quite a bit of work to convert from dataframe analyses into time series (data format for `library(TSA)`).
+
+```{r harmonic-regression}
+full_dates <- seq(min(nasdaq_fits$date), max(nasdaq_fits$date), by="day")
+
+ix_order <- sapply(1:length(full_dates), function(x) {
+  if (any(full_dates[x]==nasdaq_fits$date)) {
+    which(full_dates[x] == nasdaq_fits$date)
+} else {
+    NA
+  }
+}) 
+
+nasdaq_mat <- cbind(full_dates, detrended=nasdaq_fits$detrended[ix_order])
+
+nasdaq_ts  <- ts(data=nasdaq_mat[,2],
+                start = c(2019, 
+                          as.numeric(format(full_dates[1], "%j"))),
+                frequency = 365)
+```
+
+When we let there be 2 harmonics fit, the fitted values look like this. These waves do not well describe the seasonality.
+
+```{r nasdaq-plot-5}
+harm_val <- harmonic(nasdaq_ts, m=2)
+harm_fit <- lm(nasdaq_ts~harm_val)
+
+nasdaq_fits$fit_harm <- harm_fit$fitted.values
+nasdaq_fits <- nasdaq_fits %>% mutate(deseasoned=detrended-fit_harm)
+
+ggplot(data=nasdaq_fits, aes(x=date, y=fit_harm)) +
+  geom_point(data=nasdaq_fits, aes(x=date, y=detrended), col="darkgrey") +
+  geom_line(data=nasdaq_fits, aes(x=date, y=detrended), col="grey") +
+  ylab("NASDAQ") +
+  geom_line(lwd=1, col="pink3") +
+  geom_point(col="darkred") +
+  ggtitle("Nasdaq Stock Market Index (27-FEB-2019 TO 28-MAY-2019)") +
+  theme_minimal() +
+  scale_colour_brewer(palette="Reds")
+```
+
+When we let there be 3 harmonics fit, the fitted values look like this. This harmonic regression better fits our data.
 
 
+```{r nasdaq-plot-6}
+harm_val <- harmonic(nasdaq_ts, m=3)
+harm_fit <- lm(nasdaq_ts~harm_val)
+
+nasdaq_fits$fit_harm <- harm_fit$fitted.values
+nasdaq_fits <- nasdaq_fits %>% mutate(deseasoned=detrended-fit_harm)
+
+ggplot(data=nasdaq_fits, aes(x=date, y=fit_harm)) +
+  geom_point(data=nasdaq_fits, aes(x=date, y=detrended), col="darkgrey") +
+  geom_line(data=nasdaq_fits, aes(x=date, y=detrended), col="grey") +
+  ylab("NASDAQ") +
+  geom_line(lwd=1, col="pink3") +
+  geom_point(col="darkred") +
+  ggtitle("Nasdaq Stock Market Index (27-FEB-2019 TO 28-MAY-2019)") +
+  theme_minimal() +
+  scale_colour_brewer(palette="Reds")
+```
+
+## Noise
 
 
+```{r}
+ggplot(data=nasdaq_fits, aes(x=date, y=deseasoned)) +
+  geom_line(lwd=1, col="pink3") +
+  geom_point(col="darkred") +
+  ggtitle("Nasdaq Stock Market Index (27-FEB-2019 TO 28-MAY-2019)") +
+  theme_minimal() +
+  scale_colour_brewer(palette="Reds")
+```
+
+### Test for stationarity
+
+To test if this white noise is stationary, we will use the **Ljung-Box test**. The lag I will input will be `min(2*d, n/5)`. I will let my period be one week, therefore our period $d=7$, and $n=$ `r nrow(nasdaq_fits)`.
+
+$H_0$: The model does not show a lack of fit. The model's does not show autocorrelation. (The model's a-okay.)
+
+$H_1:$ The model shows a lack of fit.
+
+```{r}
+d <- 7
+n <- nrow(nasdaq_fits)
+
+box_lag <- min(2*d, n/5)
+Box.test(nasdaq_fits$deseasoned, lag=box_lag, type="Ljung-Box")
+```
+
+The p-value above is super small, so we cannot reject the null hypothesis above. Our model's not doing so well.
+
+### Diagnostic plots (ACF/PACF)
+
+
+```{r acf-pacf}
+nasdaq_acf <- acf(nasdaq_fits$deseasoned, plot=FALSE)
+acf_values <- as.numeric(unlist(nasdaq_acf[[1]]))
+
+nasdaq_pacf <- pacf(nasdaq_fits$deseasoned, plot=FALSE)
+pacf_values <- as.numeric(unlist(nasdaq_pacf[[1]]))
+
+diagnostic_df <- data.frame(cbind(lags=1:length(acf_values), acf=acf_values, pacf=pacf_values))
+
+ci    <- 0.95
+bound <- qnorm((1 + ci)/2)/sqrt(n)
+```
+
+The following is an **autocorrelation function (ACF)** plot. There are significant spikes at the frist and second lag. The 17th lag is also significant.
+
+```{r acf-plot}
+ggplot(diagnostic_df, aes(x=lags, y=acf)) +
+  geom_hline(yintercept=c(bound, -bound), col="pink2", lty=2) +
+  geom_hline(yintercept=0, col="pink3") +
+  geom_segment(aes(x=lags, xend=lags, y=0, yend=acf), lwd=2, col="darkred") +
+  theme_minimal()
+```
+
+
+The following is a **partial autocorrelation function (PACF)** plot. The PACF plot shows a decay toward 0.
+
+```{r pacf-plot}
+ggplot(diagnostic_df, aes(x=lags, y=pacf)) +
+  geom_hline(yintercept=c(bound, -bound), col="pink2", lty=2) +
+  geom_hline(yintercept=0, col="pink3") +
+  geom_segment(aes(x=lags, xend=lags, y=0, yend=pacf), lwd=2, col="darkred") +
+  theme_minimal()
+```
+
+These plots show that there is still strong dependence structures between the observations between the present observation and the two observations before. Therefore, our model is not capturing all of the dependence between time and the Nasdaq index.
+
+## So, what?
+We need to restrategize. In this blog, we covered classical decomposition in a way that you can jump into time series by knowing linear regression and understanding the gist harmonic regression. **In blogs to come, I will go over more methods like differencing,  moving averages, and ARIMA models.** These will require some more statistical theory to understand, so continue to bare with me!
+
+If you have questions or corrections, please do route them over to my email.
+
+
+# Contributions
+Thank you to my first reader, <a href="https://www.linkedin.com/in/asemberkalieva/">Asem</a>!
 
 # References
+Brockwell, P. J., Davis, R. A., & Fienberg, S. E. (1991). Time Series: Theory and Methods: Theory and Methods. Springer Science & Business Media.
 
 Hom, Elaine J. "What is NASDAQ?". (2012.) [<a href="https://www.businessnewsdaily.com/3403-nasdaq.html">URL</a>]
+
+Hyndman, R.J., & Athanasopoulos, G. (2018) Forecasting: principles and practice, 2nd edition, OTexts: Melbourne, Australia. OTexts.com/fpp2. Accessed on 30 May 2019.
 
 Lotan, Gilad. "#FreddieGray -- is not trending on Twitter?" (2015.) [<a href="https://medium.com/i-data/freddiegray-is-not-trending-on-twitter-9e4550607a39">URL</a>]
 
@@ -100,13 +346,19 @@ Millheiser, Ian. "Justice Thomas launches an utterly bizarre attack on birth con
 
 Needle, Sarah. "How Does Twitter Decide What Is Trending?". (2016.) [<a href="https://rethinkmedia.org/blog/how-does-twitter-decide-what-trending">URL</a>]
 
+Rich, Kyle T. "Stationarity Testing". (2017). [<a href="https://rpubs.com/richkt/269797">URL</a>]
+
+Shumway, R. H., & Stoffer, D. S. (2017). Time series analysis and its applications: with R examples. Springer.
+
+Simpson, Gavin. StackOverflow answer. (2015). [<a href="https://stackoverflow.com/questions/33128865/starting-a-daily-time-series-in-r">URL</a>]
+
 Stirling, Doug. "CAST". [<a href="http://www-ist.massey.ac.nz/dstirlin/CAST/CAST/Hmultiplicative/multiplicative1.html">URL</a>]
 
-# Data Sources
 
+
+# Data Sources
 Nasdaq Historical Quote Download. [<a href="https://www.nasdaq.com/symbol/csv/historical">URL</a>]
 
 ```{r}
 nasdaq %>% arrange(date)
 ```
-

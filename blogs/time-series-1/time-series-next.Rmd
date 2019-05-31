@@ -1,0 +1,88 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Based on the information from *Forecasting* [^1], these plots suggest an $AR(2)$ or $ARIMA(2,0,0)$ model. We can fit one by using `arima()` from `library(TSA)`.
+
+```{r}
+arima_fit_1 <- arima(x=nasdaq_fits$deseasoned, order=c(2,0,0))
+arima_fit_1
+```
+
+The **Akaike Information Criterion (AIC)**, a measure of model fit, for this model is 9.89. Across all models, we wish to minimize AIC. This value does not mean much as a singular value. In order to use it, we must compare another model's AIC to this one for model selection.
+
+We will now return to the Ljung-Box test.
+
+```{r}
+d <- 7
+n <- nrow(nasdaq_fits)
+box_lag <- min(2*d, n/5)
+Box.test(arima_fit_1$residuals, lag=box_lag, type="Ljung-Box")
+```
+
+The p-value for this shows that our model fit is satisfactory.
+
+### Auto ARIMA
+
+```{r}
+arima_fit_2 <- auto.arima(nasdaq_fits$deseasoned)
+arima_fit_2
+```
+
+```{r}
+d <- 7
+n <- nrow(nasdaq_fits)
+box_lag <- min(2*d, n/5)
+Box.test(arima_fit_2$residuals, lag=box_lag, type="Ljung-Box")
+```
+
+## Prediction
+
+# Contributions
+
+# References
+
+Brockwell, P. J., Davis, R. A., & Fienberg, S. E. (1991). Time Series: Theory and Methods: Theory and Methods. Springer Science & Business Media.
+
+Hom, Elaine J. "What is NASDAQ?". (2012.) [<a href="https://www.businessnewsdaily.com/3403-nasdaq.html">URL</a>]
+
+Hyndman, R.J., & Athanasopoulos, G. (2018) Forecasting: principles and practice, 2nd edition, OTexts: Melbourne, Australia. OTexts.com/fpp2. Accessed on <current date>.
+
+Lotan, Gilad. "#FreddieGray -- is not trending on Twitter?" (2015.) [<a href="https://medium.com/i-data/freddiegray-is-not-trending-on-twitter-9e4550607a39">URL</a>]
+
+Millheiser, Ian. "Justice Thomas launches an utterly bizarre attack on birth control". (2019.)
+[<a href="https://thinkprogress.org/justice-thomas-launches-an-utterly-bizarre-attack-on-birth-control-195921bb7781/">URL</a>]
+
+Needle, Sarah. "How Does Twitter Decide What Is Trending?". (2016.) [<a href="https://rethinkmedia.org/blog/how-does-twitter-decide-what-trending">URL</a>]
+
+Shumway, R. H., & Stoffer, D. S. (2017). Time series analysis and its applications: with R examples. Springer.
+
+Stirling, Doug. "CAST". [<a href="http://www-ist.massey.ac.nz/dstirlin/CAST/CAST/Hmultiplicative/multiplicative1.html">URL</a>]
+
+
+<a href="https://rpubs.com/richkt/269797">Stationarity Testing</a>.
+
+<a href="https://stackoverflow.com/questions/33128865/starting-a-daily-time-series-in-r">RE: Daily Time Series</a>.
+
+<a href="https://stats.stackexchange.com/questions/211628/how-is-the-confidence-interval-calculated-for-the-acf-function">ACF/PACF confidence intervals</a>.
+
+<a href="https://towardsdatascience.com/significance-of-acf-and-pacf-plots-in-time-series-analysis-2fa11a5d10a8">Reading ACF/PACF</a>.
+
+<a href="https://stats.stackexchange.com/questions/281666/how-does-acf-pacf-identify-the-order-of-ma-and-ar-terms">AR and MA orders from plots</a>.
+
+<a href="https://onlinecourses.science.psu.edu/stat510/lesson/2/2.2">More about above</a>.
+
+
+
+# Data Sources
+
+Nasdaq Historical Quote Download. [<a href="https://www.nasdaq.com/symbol/csv/historical">URL</a>]
+
+```{r}
+nasdaq %>% arrange(date)
+```
+
+# Footnotes
+
+[^1]: Hyndman and Athanasopoulos state the following: "The data may follow an ARIMA(p, d, 0) model if the ACF and PACF plots of the differenced data show the following patterns: (1) the ACF is exponentially decaying or sinusoidal; (2) there is a significant spike at lag p in the PACF, but none beyond lag p. The data may follow an ARIMA(0, d, q) model if the ACF and PACF plots of the differenced data show the following patterns: (1) the PACF is exponentially decaying or sinusoidal; (2)there is a significant spike at lag q in the ACF, but none beyond lag q."

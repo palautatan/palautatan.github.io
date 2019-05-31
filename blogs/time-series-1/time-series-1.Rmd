@@ -146,7 +146,7 @@ $$
 \rho(r,s) = \frac{\gamma_X(r,s)}{\sqrt{\gamma_X(s,s)\gamma_X(r,r)}}
 $$
 
-The **strict stationarity** of a time series implies thatfor all integers $h$ (**lag**), $\{X_t\}$ and $\{X_{t+h}\}=\{X_{1+h}, X_{2+h},...,X_{n+h}\}$ have the same joint distribution. If $\{X_t\}$ is strictly stationary, then $\{X_t\}$ is also weakly stationary. **Weak stationarity** implies
+The **strict stationarity** of a time series implies that for all integers $h$ (**lag**), $\{X_t\}$ and $\{X_{t+h}\}=\{X_{1+h}, X_{2+h},...,X_{n+h}\}$ have the same joint distribution. If $\{X_t\}$ is strictly stationary, then $\{X_t\}$ is also weakly stationary. **Weak stationarity** implies
 
 (1) $\mu_X(t)$ is independent of $t$ and  
 
