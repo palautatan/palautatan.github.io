@@ -1,5 +1,5 @@
 ---
-title: "Time Series"
+title: "Intro to Time Series [TS1]"
 author: Edie Espejo
 date: 28 May 2019
 output:
