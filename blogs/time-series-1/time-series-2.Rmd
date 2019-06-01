@@ -106,7 +106,7 @@ ggplot(data=nasdaq, aes(x=date, y=average)) +
   scale_colour_brewer(palette="Reds")
 ```
 
-In statistics, we canonically learn to model trends with **linear regression**. That is, we take $y=mx+b$ and make a line of best fit. Using ordinary least squares, we can fit coefficients using `lm()` from base `R`. How to fit a sinusoidal (curvy/up and down pattern/sine-wave-like) seasonality component is less taught, but we can use **harmonic regression** to do this. Methods to separate trend/seasonality that are popular particular to and popular in time series are **differencing** and using **moving averages**.
+In statistics, we canonically learn to model trends with **linear regression**. That is, we take $y=mx+b$ and make a line of best fit. Using ordinary least squares, we can fit coefficients using `lm()` from base `R`. How to fit a sinusoidal (curvy/up and down pattern/sine-wave-like) seasonality component is less taught, but we can use **harmonic regression** to do this. Methods to separate trend/seasonality that are particular to and popular in time series are **differencing** and using **moving averages**.
 
 With so many methods available to estimate trend and seasonality, I was immediately confused on which route was most correct. My reflex was to ask one of my favorite advisors, <a href="https://statistics.ucdavis.edu/people/alexander-aue">Dr. Alex Aue</a>. Here's part of our email thread. He advised me that **there is no general rule on how to choose which method to remove trend and seasonality**. After estimating trend and seasonality using any method, an assessment of the random noise residuals will show which method works the best.
 
