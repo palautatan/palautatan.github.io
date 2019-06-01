@@ -1,3 +1,5 @@
+<a href="/"><img src="images/banners_github.003.jpg"></a>
+
 # Blogs
 
 ## Density estimation
