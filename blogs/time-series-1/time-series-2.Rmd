@@ -54,9 +54,9 @@ ggplot(nasdaq_long) +
 
 <img src="images/us-trending.png" width=200 alt="US trends on Twitter." align="right">
 
-If you're partial to watching the news on television, the NASDAQ stock market index is a natural sight. The y-axis in the plot above represents a "snapshot" stock market performance and the x-axis is time. The data presented in the plot are a "time series" because they are repeated measurements taken over a time period. The data above were downloaded from the Nasdaq website and cover a month period from the end of April to the end of May. Over this period, the index peaked on the 24th of May.
+If you're partial to watching the news on television, the NASDAQ stock market index is a natural sight. The y-axis in the plot above represents a "snapshot" stock market performance and the x-axis is time. The data presented in the plot are a "time series" because they are repeated measurements taken over a time period. The data above were downloaded from the Nasdaq website and cover a three month period from the end of February to the end of May. Over this period, the index peaked in early March.
 
-If you prefer personalizing your periodicals on Twitter over watching the news, you are familiar with the concept of "trending". While no time series plots are visible to Twitter users, data scientists use time series trends to determine which hashtags are the most popular according to your account preferences. 
+If you prefer personalizing your periodicals on Twitter over television news, you are familiar with the concept of "trending". While no time series plots are visible to Twitter users, data scientists use time series trends to determine which hashtags are the most popular according to your account preferences. 
 
 By default, Twitter accounts show personalized trends on the homepage. That is, the trends you see take into account your location and who you follow to show you what is important to you. (Which has some dangerous aftermath, but this thought experiment will be left as exercise to the reader.) 
 
