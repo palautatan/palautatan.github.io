@@ -1,4 +1,4 @@
-![site-banner](images/banners_github.003.jpg)
+<a href="/"><img src="images/banners_github.003.jpg"></a>
 
 # Projects
 Here are some of my projects and work samples. My favorite statistical applications are business, basketball, and biotech.
