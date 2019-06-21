@@ -12,7 +12,7 @@ Here are some of my projects and work samples. My favorite statistical applicati
 
 ## Do Bad Yelp Reviews Cause Closure?  
 *(Causal inference, machine learning)*  
-Yelp reviews certainly guide my choice of restaurant. Bland flavors? Tough steak? Count me out! While Yelp reviews probably do keep some customers away, in this project we conclude that according to our Las Vegas data Yelp reviews do not cause closure (under assumptions, see our <a href="graduate/ph252d/yelp-report.pdf">report</a> and <a href="graduate/ph252d/yelp-slides.pdf">slides</a>).
+Yelp reviews certainly guide my choice of restaurant. Bland flavors? Tough steak? Count me out! While Yelp reviews do keep some customers away, in this project we conclude that according to our Las Vegas data Yelp reviews do not cause closure (under assumptions, see our <a href="graduate/ph252d/yelp-report.pdf">report</a> and <a href="graduate/ph252d/yelp-slides.pdf">slides</a>).
 
 ## Gene Expression Signatures of Endometriosis
 <img src="https://raw.githubusercontent.com/palautatan/endometriosis/master/visuals/normalized-heatmap.png" align="left" width="170" border="0px">
