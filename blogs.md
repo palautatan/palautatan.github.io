@@ -2,6 +2,8 @@
 
 I will be writing statistics and data science tutorials, how it comes about in my life, and related topics.
 
+___
+
 # Blogs
 
 **2019-05-08**  
