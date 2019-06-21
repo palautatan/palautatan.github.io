@@ -17,3 +17,6 @@ ___
 
 **2019-05-29**  
 <a href="blogs/time-series-1/time-series-2.nb.html">Intro to Time Series</a>  
+
+**2019-06-20**  
+<a href="blogs/girls-in-tech/girls-in-tech.md">Girls in Tech</a>  
