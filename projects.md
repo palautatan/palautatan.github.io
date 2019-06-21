@@ -1,12 +1,18 @@
 <a href="/"><img src="images/banners_github.003-home.jpg"></a>
 
-# Projects
 Here are some of my projects and work samples. My favorite statistical applications are business, basketball, and biotech.
 
-## Personal Projects
+# Personal Projects
 * <a href="personal/project-hal.html">An analysis of Project HAL data</a> (Work in progress...)
 * Warriors Basketball Analyses (Soon to be posted...)
 * <a href="https://palautatan.github.io/fight/01-map/yelp-api.html">Northern Californian Martial Arts Map</a>
+
+
+# Graduate Projects
+
+## Do Bad Yelp Reviews Cause Closure?  
+*(Causal inference, machine learning)*  
+Yelp reviews certainly guide my choice of restaurant. Bland flavors? Tough steak? Count me out! While Yelp reviews probably do keep some customers away, in this project we conclude that according to our Las Vegas data Yelp reviews do not cause closure (under assumptions, see our <a href="graduate/ph252d/yelp-report.pdf">report</a> and <a href="graduate/ph252d/yelp-slides.pdf">slides</a>).
 
 ## Gene Expression Signatures of Endometriosis
 <img src="https://raw.githubusercontent.com/palautatan/endometriosis/master/visuals/normalized-heatmap.png" align="left" width="170" border="0px">
@@ -14,7 +20,7 @@ Here are some of my projects and work samples. My favorite statistical applicati
 Endometriosis is an estrogen-dependent condition that affects nearly 10% women of reproductive age and is characterized by chronic pain and inflammation. In this genomics project, our team explored, built, and evaluated machine learning models on their ability to identify subjects with endometriosis based on gene expression intensity alone to contest models currently in literature. See our <a href="graduate/phc240c/endometriosis-report.pdf">final report</a> and <a href="https://github.com/palautatan/endometriosis">git repository</a>.
 
 
-## Undergraduate Projects
+# Undergraduate Projects
 * Data & Web Technologies for Data Analysis (STA 141B)
     - <a href="project141b" title="Final Project">White House Petitions</a> *(NLP, machine learning)*
     - <a href="assignments/141b_assignment6.html" title="Exploring San Francisco Data">San Francisco Data</a> *(SQL, maps)*  
