@@ -7,6 +7,7 @@ Here are some of my projects and work samples. My favorite statistical applicati
 * Warriors Basketball Analyses (Soon to be posted...)
 * <a href="https://palautatan.github.io/fight/01-map/yelp-api.html">Northern Californian Martial Arts Map</a>
 
+___
 
 # Graduate Projects
 
@@ -19,6 +20,8 @@ Yelp reviews certainly guide my choice of restaurant. Bland flavors? Tough steak
 *(Genomics, machine learning)*     
 Endometriosis is an estrogen-dependent condition that affects nearly 10% women of reproductive age and is characterized by chronic pain and inflammation. In this genomics project, our team explored, built, and evaluated machine learning models on their ability to identify subjects with endometriosis based on gene expression intensity alone to contest models currently in literature. See our <a href="graduate/phc240c/endometriosis-report.pdf">final report</a> and <a href="https://github.com/palautatan/endometriosis">git repository</a>.
 
+
+___
 
 # Undergraduate Projects
 * Data & Web Technologies for Data Analysis (STA 141B)
