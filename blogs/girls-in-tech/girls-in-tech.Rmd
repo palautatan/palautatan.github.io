@@ -1,0 +1,28 @@
+---
+title: "Girls in Tech!!!"
+author: Edie Espejo
+date: 20 June 2019
+output:
+  html_notebook:
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+    number_sections: true
+---
+
+I grew up in a matriarchal household, therefore I was never told at home that I couldn't be what I wanted. My mom's strength and can-do-will-do spirit luckily transferred to my *ate [aw-teh]* (older sister) and myself. My mom is a dining table storyteller, and one she tells with a smirk is when she drove off male bullies who were threatening her younger brother in the Philippines. While my mom doesn't concern herself much with politics, she is a total feminist.
+
+Up until this point (finished with undergrad, currently in grad school), I have been spared from the same intensity of sexism I'm sure my mom and grandmother had to face en route to their goals. I am so priveleged to be able to say that; a combination of my upbringing and my locale have made it all the better for me. Because I have not had that much experience in being marginalized based on sex, I'm incredibly scared for the moment when I will be.
+
+This summer, I am interning at Gap, Inc. (Lucky me!) <a href="https://www.linkedin.com/in/sally-gilligan-7aa4a3/">Sally Gilligan</a>, Gap's CIO, spoke at San Francisco's <a href="https://catalystsf.girlsintech.org/">Girls in Tech Catalyst Conference</a>, so she invited all the female interns to the conference and invited us to lunch afterward.
+
+# Girls in Tech
+
+# Be Yourself
+
+# Forget Fear
+
+# 
