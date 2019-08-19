@@ -6,6 +6,9 @@ ___
 
 # Blogs
 
+**2019-08-18**  
+<a href='blogs/gap-intership/intership-1.nb.html'>Just Finished My First Internship!</a>
+
 **2019-06-20**  
 <a href="blogs/girls-in-tech/girls-in-tech.nb.html">Girls in Tech</a>  
 

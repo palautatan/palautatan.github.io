@@ -1,0 +1,46 @@
+---
+title: "Just Finished My First Internship!"
+author: Edie Espejo
+date: 18 August 2019
+output:
+  html_notebook:
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+    number_sections: true
+---
+
+Please don't expect from me an ever uplifting or motivating blog about finding/navigating internships. You won't find that here. Finding an internship is difficult -- so difficult in fact that I never tried applying to one in undergrad. Take this however you like, but a priest recently told me that "good people make excuses for not being better". When I was in college (*yikes*), I had a lot of activities so I made summer all about academia, not taking the chance to get rejected from internship applications. I had heard one of my colleagues applied to over 100 internships and only got the opportunity to interview at one. This was enough to keep me away from any sort of internship applications until last winter in Berkeley, 62 miles away from Davis where undergrad was.
+
+Long story short, I just finished up my first internship at Gap, Inc. in San Francisco. My official title was "Associate Data Science Intern", and I took on the role from Monday, June 17, 2019 up until Friday, August the 16th. This internship, though brief, was so important to me. I have learned much better how to navigate my ideas in the workplace, flexed and grew my data science skills, and got to know the city I was born in with a bunch of fun people who were born elsewhere.
+
+Pictured below are those "born elsewhere". Our Gap, Inc. intern class was pretty large, from diverse backgrounds, and a whole lot of fun.
+
+<img src='images/intern-class-edit.jpg'>
+
+Ashley, Anni, and I sat inside of our personal office all summer. They're standing next to each other towards the right of the photo in some rather spicy outfits (inside joke).
+
+
+# A Gap Data Science Intern
+Asem (pronounced uh-SEHM), officially my grad school best friend, and I were admist some coursework when I started applying to summer internships. I was a bit nervous doing so: putting out my very academic resume in pursuit of an official, out-of-school internship. I don't know where I found the Gap internship ad, but it was probably on Indeed. The job description seemed fortuitous. I loved clothes and data science was my trade. Why not put them together? And so I did.
+
+I put myself out there, went through all three of Gap's interview rounds (which were actually really fun), and finished a project with some amazing people that I'm really proud of. I have a whole lot of gratitude in my heart for my fellow interns, Ashley and Anni; our recruiter David; our summer mentors Caiti, Gianna, and Subha and our boss Dan.
+
+This summer was nuts! I did not come to Gap with expectations, but I have learned so much about data science and how the world works (yes, sorry, I'm pretty much a fish in a fishbowl).
+
+# Some Possible Topics
+I'm going to take my time to write about my internship at Gap in pieces so I can give some topics full attention. I have learned so much and have a lot to say!
+
+If anyone has any specific questions, I'd be happy to answer them (though I can't share company secrets; sorry, Zara!). Here are some topics that I am thinking about. I might be writing about non-data stuff sometimes.
+
+* Why the blend of data science and fashion intrigues me  
+* How my fellow interns and I split up our work (more complicated than you would imagine)  
+* An inside-look on Gap's summer intern program  
+* What data science you cannot possibly learn in school  
+* Thinking in data subsets for validation (not in the cross validation sense)  
+* I made all these graphs, will my business partner care?  
+
+For now, I'll leave it at this. It is Sunday, I am grieving that I do not get to hop on in to 2 Folsom tomorrow morning, and I absolutely hate waking up in the morning.
