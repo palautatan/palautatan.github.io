@@ -11,5 +11,5 @@ ___
 <a href="blogs">Blog</a>  
 
 # Teaching
-<a href="stat2">STAT2</a> [Fall 2019]
-<a href="ph142">PH142</a> [Fall 2018, Spring 2019]
+<a href="stat2">STAT2 Resources</a> [Fall 2019]  
+<a href="ph142">PH142 Resources</a> [Fall 2018, Spring 2019]  
