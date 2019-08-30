@@ -9,3 +9,7 @@ ___
 # Links
 <a href="projects">Projects</a>  
 <a href="blogs">Blog</a>  
+
+# Teaching
+<a href="stat2">STAT2</a> [Fall 2019]
+<a href="ph142">PH142</a> [Fall 2018, Spring 2019]
