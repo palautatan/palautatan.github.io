@@ -11,5 +11,10 @@ ___
 <a href="blogs">Blog</a>  
 
 # Teaching
-<a href="stat2">STAT2 Resources</a> (Introduction to Statistics - Fall 2019)    
-<a href="ph142">PH142 Resources</a> (Introduction to Statistics and Probability in Biology and Public Health - Fall 2018, Spring 2019)
+Fall 2019  
+Introduction to Statistics  
+<a href="stat2">STAT2 Resources</a>  
+
+Fall 2018, Spring 2019  
+Introduction to Statistics and Probability in Biology and Public Health   
+<a href="ph142">PH142 Resources</a>
