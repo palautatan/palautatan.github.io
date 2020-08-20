@@ -2,7 +2,9 @@
 
 
 # Mabuhay!
-That means "welcome!" in Tagalog. And since we're translating, *palautatan* is how you say "statistics". My name is Edie Espejo.
+That means "welcome!" in Tagalog. And since we're translating, *palautatan* is how you say "statistics".
+
+My name is Edie Espejo. I am a Cal 2020 Biostatistics Master's graduate. I specialize in **data science** (statistics, machine learning, and functional programming). I am experienced with bioinformatics and customer analytics.
 
 ___
 
