@@ -1,0 +1,176 @@
+---
+title: "Mixed Effect Models"
+output: html_notebook
+---
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(data.table)
+library(gridExtra)
+```
+
+# Introduction
+
+Here is our ever so popular linear regression model. We are predicting an outcome $Y$ based on covariates $[X_1, ..., X_k]$. We also have an error term $\epsilon_i$ drawn from a $N(0,\sigma^2)$ distribution.
+
+$$
+Y = \beta_0 + \beta_1X_1 + ... + \beta_kX_k + \epsilon_i
+$$
+
+Linear regression is awesome for data that are independent and come from the same data generating process. Some examples of linear regression problems that I have seen in my student's assignments are
+
+- Number of clusters on a log stump versus log size
+- The also ever famous iris sepal width versus sepal length
+- Math exam scores versus physics exam scores
+
+These examples seem practical for the linear regression case. But there are other scenarios that linear regression doesn't work out in, such as
+
+- <a href='https://palautatan.github.io/blogs/time-series-1/time-series-2.nb.html'>The Nasdaq Stock Market Index over Time</a>
+- Predicting the probability of a patient having a disease (because linear regression does not have bounds on the output variable $Y$)
+- Predicting the development of strength over time for different subjects in different strength training programs
+
+This blog will focus on problems similar to the third instance I bulleted above. How can we generalize the linear regression model to observations that are not independent such as repeated measures?
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+strength    <- read_csv('../../data/strength.csv')
+strength$id <- as.character(strength$id)
+```
+
+Below is what we call a **spaghetti plot** of **longitudinal data**. We have repeated measures on each of our subjects based on their increase/decrease in strength after time spent in a training program.
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+training_programs <- c('No Strength Training', 'Low Weight High Rep', 'High Weight Low Rep')
+
+strength$tx[strength$tx==1] <- training_programs[1]
+strength$tx[strength$tx==2] <- training_programs[2]
+strength$tx[strength$tx==3] <- training_programs[3]
+
+strength$tx <- as.factor(strength$tx)
+
+strength$tx <- ordered(strength$tx, levels=training_programs)
+
+strength %>%
+  ggplot(aes(x=time, y=y, group=id)) +
+  geom_line(aes(col=id), size=0.5, alpha=0.5) +
+  geom_point(size=0.5, aes(col=id)) +
+  ylab('strength') +
+  xlab('weeks') +
+  ggtitle('Strength Over Time') +
+  facet_wrap(~tx) +
+  theme_minimal() +
+  theme(legend.position='none')
+```
+
+Each of the subjects' strength progress in each of the training groups is plotted above. You can see some advances and dips in their strength levels throughout their training programs. It is unclear which program works the best to increase strength over the study  period.
+
+# Linear Regression
+Instead of looking at each of the subjects at their individual time points, we can fit a linear model to each of them. Doing this results in clearer graphical patterns as shown below. Still, the below graph is not incredibly helpful without formal testing.
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+regressIndividual <- function(outcome, covariate) {
+  model <- lm(outcome ~ covariate)
+  coefs <- coef(model)
+  
+  min_x <- min(covariate, na.rm=TRUE)
+  max_x <- max(covariate, na.rm=TRUE)
+  predictions <- predict(model,
+                         newdata=data.frame(covariate=c(min_x, max_x)))
+  
+  output <- c(coefs, predictions, min_x, max_x)
+  names(output) <- c('intercept', 'slope', 'y1', 'y2', 'x1', 'x2')
+  output
+}
+
+regressions <- lapply(unique(strength$id), function(x) {
+  our_ix  <- which(strength$id==x)
+  our_sub <- strength[our_ix,]
+  regressIndividual(our_sub$y, our_sub$time)
+})
+
+names(regressions) <- unique(strength$id)
+
+regressions_df <- data.frame(do.call(rbind, regressions))
+regressions_df$id <- 1:nrow(regressions_df)
+
+regressions_df <- merge(x=regressions_df,
+      y=strength %>% select(id, tx) %>% distinct(),
+      by='id')
+
+regressions_df$id <- as.character(regressions_df$id)
+
+
+regressions_df %>%
+  ggplot() +
+  geom_point(aes(x=x1, y=y1, col=id), size=0.5) +
+  geom_point(aes(x=x2, y=y2, col=id), size=0.5) +
+  geom_segment(aes(x=x1, xend=x2, y=y1, yend=y2, col=id), alpha=0.5) +
+  ylab('strength') +
+  xlab('weeks') +
+  ggtitle('Strength Over Time') +
+  facet_wrap(~tx) +
+  theme_minimal() +
+  theme(legend.position = 'none')
+```
+
+So you might ask, why can't we just use linear regression on these subjects.
+
+
+# Random Effects Model
+
+https://ase.tufts.edu/gsc/gradresources/guidetomixedmodelsinr/mixed%20model%20guide.html
+```{r}
+subset_3 <- strength %>% filter(tx=='High Weight Low Rep')
+
+library(lme4)
+lmm <- lmer(y ~ time + (1|id), data = subset_3)
+summary(lmm)
+```
+
+http://pages.stat.wisc.edu/~bates/UseR2008/WorkshopD.pdf
+
+https://stats.stackexchange.com/questions/174203/predict-function-for-lmer-mixed-effects-models
+
+https://strengejacke.wordpress.com/2014/10/26/visualizing-generalized-linear-mixed-effects-models-with-ggplot-rstats-lme4/
+
+```{r}
+# https://stackoverflow.com/questions/33763089/plotting-predicted-values-from-lmer-as-a-single-plot
+library(effects)
+# library(lme4)
+# library(ggplot2)
+# m1 <- lmer(price~depth*cut+(1|cut),diamonds)
+ee <- Effect(c('id'), lmm) 
+
+ggplot(as.data.frame(ee),
+       aes(depth,fit,colour=cut,fill=cut))+
+    geom_line()+
+     ## colour=NA suppresses edges of the ribbon
+    geom_ribbon(colour=NA,alpha=0.1,
+                            aes(ymin=lower,ymax=upper))+
+     ## add rug plot based on original data
+        geom_rug(data=ee$data,aes(y=NULL),sides="b")
+```
+
+```{r}
+library(car)
+car::Anova(lmm)
+```
+
+
+```{r}
+# https://bbolker.github.io/morelia_2018/notes/mixedlab.html
+```
+
+“If an effect is assumed to be a realized value of a random variable, it is called a random effect.” (LaMotte, 1983)
+
+
+# Data Source
+The data I am working with was provided to me on the cloud through a course I'm taking.
+
+# References
+
+1. https://stats.stackexchange.com/questions/4700/what-is-the-difference-between-fixed-effect-random-effect-and-mixed-effect-mode
+
+2. http://statweb.stanford.edu/~jtaylo/courses/stats203/notes/fixed+random.pdf
+

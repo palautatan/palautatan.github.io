@@ -1,0 +1,6 @@
+---
+title: "Ongoing Curiousities"
+output: html_notebook
+---
+
+1. Why would you choose to do multiple hypothesis testing? In which case can you just do multiple hypothesis tests and not correct them?

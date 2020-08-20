@@ -1,0 +1,16 @@
+---
+title: "Semester of Statistical Consulting"
+output: html_notebook
+---
+
+This fall semester, I had the delight of being a consultant for the free Berkeley statistical consulting group. My semester, I got to work with 6 wonderful statistics PhD students and 1 statistics MA student (my partner, Sargam). We were led by Professors Lisa Goldberg and Philip Stark, and Dr. Xiaowu Dai, a visiting postdoc.
+
+
+
+- What is the research question?
+
+- What is the experimental design?
+
+- Have the experimental design ready before the hypothesis?
+
+- Reviewers will ask for more statistics when it's not necessary.
