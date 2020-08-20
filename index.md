@@ -1,4 +1,4 @@
-<a href="/"><img src="images/banners_github.003.jpg"></a>
+<a href="/"><img src="images/banners/site-banner/site-banner.002.jpeg"></a>
 
 
 # Mabuhay!
