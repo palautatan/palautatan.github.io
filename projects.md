@@ -1,10 +1,9 @@
-<a href="/"><img src="images/banners_github.003-home.jpg"></a>
+<a href="/"><img src="images/banners/site-banner/site-banner.002.jpeg"></a>
 
 Here are some of my projects and work samples. My favorite statistical applications are business, basketball, and biotech.
 
 # Personal Projects
-* <a href="personal/project-hal.html">An analysis of Project HAL data</a> (Work in progress...)
-* Warriors Basketball Analyses (Soon to be posted...)
+* <a href="personal/project-hal.html">An analysis of Project HAL data</a>
 * <a href="https://palautatan.github.io/fight/01-map/yelp-api.html">Northern Californian Martial Arts Map</a>
 
 ___

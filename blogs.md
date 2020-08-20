@@ -1,4 +1,4 @@
-<a href="/"><img src="images/banners_github.003-home.jpg"></a>
+<a href="/"><img src="images/banners/site-banner/site-banner.002.jpeg"></a>
 
 I will be writing statistics and data science tutorials, how it comes about in my life, and related topics.
 
