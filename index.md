@@ -11,12 +11,4 @@ ___
 # Links
 <a href="projects">Projects</a>  
 <a href="blogs">Blog</a>  
-
-# Teaching
-**Fall 2019**    
-Introduction to Statistics  
-<a href="stat2">STAT2 Resources</a>  
-
-**Fall 2018, Spring 2019**    
-Introduction to Statistics and Probability in Biology and Public Health   
-<a href="ph142">PH142 Resources</a>
+<a href="ph142">Teaching</a>
