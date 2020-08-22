@@ -6,6 +6,11 @@ ___
 
 # Blogs
 
+## 2020
+**2020-08-21**  
+<a href='blogs/gap-internship/what-i-learned.nb.html'>8 Tips for New Data Scientists (From an Internship Perspective)</a>
+
+## 2019
 **2019-08-18**  
 <a href='blogs/gap-internship/internship-1.nb.html'>Just Finished My First Internship!</a>
 
