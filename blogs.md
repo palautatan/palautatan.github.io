@@ -7,6 +7,9 @@ ___
 # Blogs
 
 ## 2020
+**2020-10-02**  
+<a href='blogs/progressive-overload/overload-app.nb.html'>Overload - My Strength Training App</a>
+
 **2020-08-21**  
 <a href='blogs/gap-internship/what-i-learned.nb.html'>8 Tips for New Data Scientists (From an Internship Perspective)</a>
 

@@ -3,6 +3,7 @@
 Here are some of my projects and work samples. My favorite statistical applications are business, basketball, and biotech.
 
 # Personal Projects
+* <a href='https://palautatan.shinyapps.io/overload-app/'>Overload - Weight Lifting App</a>
 * <a href="personal/project-hal.html">An analysis of Project HAL data</a>
 * <a href="https://palautatan.github.io/fight/01-map/yelp-api.html">Northern Californian Martial Arts Map</a>
 
