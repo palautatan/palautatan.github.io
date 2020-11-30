@@ -7,6 +7,10 @@ ___
 # Blogs
 
 ## 2020
+
+**2020-11-30**
+<a href='blogs/biostatistics/why-biostatistics.nb.html'>Why Statistics? Biostatistics?</a>
+
 **2020-10-02**  
 <a href='blogs/progressive-overload/overload-app.nb.html'>Overload - My Strength Training App</a>
 
