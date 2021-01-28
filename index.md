@@ -11,4 +11,4 @@ ___
 # Links
 <a href="projects">Projects</a>  
 <a href="blogs">Blog</a>  
-<a href="ph142">Teaching</a>
+<a href="teaching">Teaching</a>
