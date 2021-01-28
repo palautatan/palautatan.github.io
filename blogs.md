@@ -8,6 +8,9 @@ ___
 
 ## 2020
 
+**2020-12-23**
+<a href='blogs/christmas/christmas.nb.html'>Christmas Fun with Correlation, the SD Line, and Bibingka</a>
+
 **2020-11-30**  
 <a href='blogs/biostatistics/why-biostatistics.nb.html'>Why Statistics? Biostatistics?</a>
 
